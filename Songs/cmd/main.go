@@ -21,7 +21,7 @@ func main() {
 	})
 
 	logrus.Info("[INFO] Web server started. Now listening on *:8080")
-	logrus.Fatalln(http.ListenAndServe(":8089", r))
+	logrus.Fatalln(http.ListenAndServe(":8082", r))
 }
 
 func init() {
@@ -32,6 +32,8 @@ func init() {
 	schemes := []string{
 		`CREATE TABLE IF NOT EXISTS collections (
 			id VARCHAR(255) PRIMARY KEY NOT NULL UNIQUE,
+			artist VARCHAR(255) NOT NULL,
+			title VARCHAR(255) NOT NULL,
 			content VARCHAR(255) NOT NULL
 		);`,
 	}
@@ -42,3 +44,4 @@ func init() {
 	}
 	helpers.CloseDB(db)
 }
+
