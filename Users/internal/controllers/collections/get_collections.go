@@ -2,10 +2,11 @@ package collections
 
 import (
 	"encoding/json"
-	"github.com/sirupsen/logrus"
 	"middleware/example/internal/models"
 	"middleware/example/internal/services/collections"
 	"net/http"
+
+	"github.com/sirupsen/logrus"
 )
 
 // GetCollections
@@ -15,9 +16,9 @@ import (
 // @Success      200            {array}  models.Collection
 // @Failure      500             "Something went wrong"
 // @Router       /collections [get]
-func GetCollections(w http.ResponseWriter, _ *http.Request) {
+func GetUsers(w http.ResponseWriter, _ *http.Request) {
 	// calling service
-	collections, err := collections.GetAllCollections()
+	collections, err := collections.GetAllUsers()
 	if err != nil {
 		// logging error
 		logrus.Errorf("error : %s", err.Error())

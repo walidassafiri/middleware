@@ -3,17 +3,18 @@ package collections
 import (
 	"database/sql"
 	"errors"
-	"github.com/gofrs/uuid"
-	"github.com/sirupsen/logrus"
 	"middleware/example/internal/models"
 	repository "middleware/example/internal/repositories/collections"
 	"net/http"
+
+	"github.com/gofrs/uuid"
+	"github.com/sirupsen/logrus"
 )
 
-func GetAllCollections() ([]models.Collection, error) {
+func GetAllUsers() ([]models.Collection, error) {
 	var err error
 	// calling repository
-	collections, err := repository.GetAllCollections()
+	collections, err := repository.GetAllUsers()
 	// managing errors
 	if err != nil {
 		logrus.Errorf("error retrieving collections : %s", err.Error())
@@ -26,12 +27,12 @@ func GetAllCollections() ([]models.Collection, error) {
 	return collections, nil
 }
 
-func GetCollectionById(id uuid.UUID) (*models.Collection, error) {
-	collection, err := repository.GetCollectionById(id)
+func GetUserById(id uuid.UUID) (*models.Collection, error) {
+	collection, err := repository.GetUserById(id)
 	if err != nil {
 		if errors.As(err, &sql.ErrNoRows) {
 			return nil, &models.CustomError{
-				Message: "collection not found",
+				Message: " not found",
 				Code:    http.StatusNotFound,
 			}
 		}

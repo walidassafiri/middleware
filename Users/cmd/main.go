@@ -1,19 +1,20 @@
 package main
 
 import (
-	"github.com/go-chi/chi/v5"
-	"github.com/sirupsen/logrus"
 	"middleware/example/internal/controllers/collections"
 	"middleware/example/internal/helpers"
 	_ "middleware/example/internal/models"
 	"net/http"
+
+	"github.com/go-chi/chi/v5"
+	"github.com/sirupsen/logrus"
 )
 
 func main() {
 	r := chi.NewRouter()
 
-	r.Route("/collections", func(r chi.Router) {
-		r.Get("/", collections.GetCollections)
+	r.Route("/user", func(r chi.Router) {
+		r.Get("/", collections.GetUsers)
 		r.Route("/{id}", func(r chi.Router) {
 			r.Use(collections.Ctx)
 			r.Get("/", collections.GetCollection)
@@ -21,7 +22,7 @@ func main() {
 	})
 
 	logrus.Info("[INFO] Web server started. Now listening on *:8080")
-	logrus.Fatalln(http.ListenAndServe(":8089", r))
+	logrus.Fatalln(http.ListenAndServe(":8088", r))
 }
 
 func init() {
@@ -30,9 +31,16 @@ func init() {
 		logrus.Fatalf("error while opening database : %s", err.Error())
 	}
 	schemes := []string{
-		`CREATE TABLE IF NOT EXISTS collections (
+		`CREATE TABLE IF NOT EXISTS collection (
 			id VARCHAR(255) PRIMARY KEY NOT NULL UNIQUE,
 			content VARCHAR(255) NOT NULL
+		);`,
+		`CREATE TABLE IF NOT EXISTS users (
+			id VARCHAR(255) PRIMARY KEY NOT NULL UNIQUE,
+			name VARCHAR(255) NOT NULL ,
+			mail VARCHAR(255) NOT NULL ,
+			password VARCHAR(255) NOT NULL 
+			
 		);`,
 	}
 	for _, scheme := range schemes {

@@ -1,17 +1,18 @@
 package collections
 
 import (
-	"github.com/gofrs/uuid"
 	"middleware/example/internal/helpers"
 	"middleware/example/internal/models"
+
+	"github.com/gofrs/uuid"
 )
 
-func GetAllCollections() ([]models.Collection, error) {
+func GetAllUsers() ([]models.Collection, error) {
 	db, err := helpers.OpenDB()
 	if err != nil {
 		return nil, err
 	}
-	rows, err := db.Query("SELECT * FROM collections")
+	rows, err := db.Query("SELECT * FROM collection")
 	helpers.CloseDB(db)
 	if err != nil {
 		return nil, err
@@ -33,7 +34,7 @@ func GetAllCollections() ([]models.Collection, error) {
 	return collections, err
 }
 
-func GetCollectionById(id uuid.UUID) (*models.Collection, error) {
+func GetUserById(id uuid.UUID) (*models.Collection, error) {
 	db, err := helpers.OpenDB()
 	if err != nil {
 		return nil, err
