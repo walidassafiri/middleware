@@ -11,7 +11,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func GetAllUsers() ([]models.Collection, error) {
+func GetAllUsers() ([]models.User, error) {
 	var err error
 	// calling repository
 	collections, err := repository.GetAllUsers()
@@ -27,7 +27,7 @@ func GetAllUsers() ([]models.Collection, error) {
 	return collections, nil
 }
 
-func GetUserById(id uuid.UUID) (*models.Collection, error) {
+func GetUserById(id uuid.UUID) (*models.User, error) {
 	collection, err := repository.GetUserById(id)
 	if err != nil {
 		if errors.As(err, &sql.ErrNoRows) {

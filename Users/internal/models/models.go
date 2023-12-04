@@ -10,7 +10,7 @@ type Collection struct {
 }
 type User struct {
 	Id       *uuid.UUID `json:"id"`
-	Name     string     `json:"content"`
-	Mail     string     `json:"content"`
-	Password string     `json:"content"`
+	Name     string     `json:"name"`
+	Mail     string     `json:"mail"`
+	Password string     `json:"password"`
 }

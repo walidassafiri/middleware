@@ -19,9 +19,9 @@ import (
 // @Failure      422            "Cannot parse id"
 // @Failure      500            "Something went wrong"
 // @Router       /collections/{id} [get]
-func GetCollection(w http.ResponseWriter, r *http.Request) {
+func GetUser(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	collectionId, _ := ctx.Value("collectionId").(uuid.UUID)
+	collectionId, _ := ctx.Value("userId").(uuid.UUID)
 
 	collection, err := collections.GetUserById(collectionId)
 	if err != nil {

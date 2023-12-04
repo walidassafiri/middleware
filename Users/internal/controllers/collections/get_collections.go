@@ -40,3 +40,7 @@ func GetUsers(w http.ResponseWriter, _ *http.Request) {
 	_, _ = w.Write(body)
 	return
 }
+func PostUsers(w http.ResponseWriter, r *http.Request) {
+	// calling service
+
+}

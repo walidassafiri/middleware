@@ -17,7 +17,14 @@ func main() {
 		r.Get("/", collections.GetUsers)
 		r.Route("/{id}", func(r chi.Router) {
 			r.Use(collections.Ctx)
-			r.Get("/", collections.GetCollection)
+			r.Get("/", collections.GetUser)
+		})
+	})
+	r.Route("/user", func(r chi.Router) {
+		r.Post("/", collections.PostUsers)
+		r.Route("/{id}", func(r chi.Router) {
+			r.Use(collections.Ctx)
+			r.Get("/", collections.GetUser)
 		})
 	})
 
@@ -31,7 +38,7 @@ func init() {
 		logrus.Fatalf("error while opening database : %s", err.Error())
 	}
 	schemes := []string{
-		`CREATE TABLE IF NOT EXISTS collection (
+		`CREATE TABLE IF NOT EXISTS collections (
 			id VARCHAR(255) PRIMARY KEY NOT NULL UNIQUE,
 			content VARCHAR(255) NOT NULL
 		);`,
