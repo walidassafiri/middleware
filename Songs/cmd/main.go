@@ -12,13 +12,18 @@ import (
 func main() {
 	r := chi.NewRouter()
 
-	r.Route("/collections", func(r chi.Router) {
-		r.Get("/", collections.GetCollections)
-		r.Route("/{id}", func(r chi.Router) {
-			r.Use(collections.Ctx)
-			r.Get("/", collections.GetCollection)
-		})
+	r.Route("/songs", func(r chi.Router) {
+		r.Get("/", collections.GetAllSongs)
+		//r.Route("/{id}", func(r chi.Router) {
+			//r.Use(collections.Ctx)
+			//r.Get("/", collections.GetSongsById)
+			//r.Put("/", collections.UpdateSong)
+			//r.Delete("/", collections.CreateSong)
+
+		//})
+		//r.Post("/", collections.CreateSong)
 	})
+
 
 	logrus.Info("[INFO] Web server started. Now listening on *:8080")
 	logrus.Fatalln(http.ListenAndServe(":8082", r))
@@ -30,10 +35,11 @@ func init() {
 		logrus.Fatalf("error while opening database : %s", err.Error())
 	}
 	schemes := []string{
-		`CREATE TABLE IF NOT EXISTS collections (
+		`CREATE TABLE IF NOT EXISTS songs (
 			id VARCHAR(255) PRIMARY KEY NOT NULL UNIQUE,
 			artist VARCHAR(255) NOT NULL,
 			title VARCHAR(255) NOT NULL,
+			album VARCHAR(255) NOT NULL,
 			content VARCHAR(255) NOT NULL
 		);`,
 	}
