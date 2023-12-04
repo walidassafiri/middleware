@@ -26,8 +26,8 @@ func GetAllRatings() ([]models.Rating, error) {
 	return collections, nil
 }
 
-func GetCollectionById(id uuid.UUID) (*models.Collection, error) {
-	collection, err := repository.GetCollectionById(id)
+func GetRatingById(id uuid.UUID) (*models.Rating, error) {
+	collection, err := repository.GetRatingById(id)
 	if err != nil {
 		if errors.As(err, &sql.ErrNoRows) {
 			return nil, &models.CustomError{

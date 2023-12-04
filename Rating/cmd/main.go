@@ -16,8 +16,9 @@ func main() {
 		r.Get("/", collections.GetRatings)
 		r.Route("/{id}", func(r chi.Router) {
 			r.Use(collections.Ctx)
-			r.Get("/", collections.GetCollection)
+			r.Get("/", collections.GetRating)
 		})
+		r.Post("/", collections.PostRating)                                    
 	})
 
 	logrus.Info("[INFO] Web server started. Now listening on *:8080")
@@ -34,7 +35,7 @@ func init() {
 			id VARCHAR(255) PRIMARY KEY NOT NULL UNIQUE,
 			content VARCHAR(255) NOT NULL
 		);`,
-		` CREATE TABLE IF NOT EXISTS ratings (
+		` CREATE TABLE IF NOT EXISTS  ratings(
 			id VARCHAR(255) PRIMARY KEY NOT NULL UNIQUE,
 			score VARCHAR(255) NOT NULL,
 			idUser VARCHAR(255) NOT NULL,

@@ -33,16 +33,31 @@ func GetAllRatings() ([]models.Rating, error) {
 	return collections, err
 }
 
-func GetCollectionById(id uuid.UUID) (*models.Collection, error) {
+func GetRatingById(id uuid.UUID) (*models.Rating, error) {
 	db, err := helpers.OpenDB()
 	if err != nil {
 		return nil, err
 	}
-	row := db.QueryRow("SELECT * FROM collections WHERE id=?", id.String())
+	row := db.QueryRow("SELECT * FROM ratings WHERE id=?", id.String())
 	helpers.CloseDB(db)
 
-	var collection models.Collection
-	err = row.Scan(&collection.Id, &collection.Content)
+	var collection models.Rating
+	err = row.Scan(&collection.Id,&collection.Score,&collection.IdUser,&collection.IdSong,&collection.Content)
+	if err != nil {
+		return nil, err
+	}
+	return &collection, err
+}
+func PostRating(id uuid.UUID) (*models.Rating, error) {
+	db, err := helpers.OpenDB()
+	if err != nil {
+		return nil, err
+	}
+	row := db.QueryRow("INSERT INTO ratings(id,score,idUser,idSong,content)VALUES(?,?,?,?,?);", id.String())
+	helpers.CloseDB(db)
+
+	var collection models.Rating
+	err = row.Scan(&collection.Id,&collection.Score,&collection.IdUser,&collection.IdSong,&collection.Content)
 	if err != nil {
 		return nil, err
 	}

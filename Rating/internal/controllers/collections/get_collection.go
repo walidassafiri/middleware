@@ -18,11 +18,11 @@ import (
 // @Failure      422            "Cannot parse id"
 // @Failure      500            "Something went wrong"
 // @Router       /collections/{id} [get]
-func GetCollection(w http.ResponseWriter, r *http.Request) {
+func GetRating(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	collectionId, _ := ctx.Value("collectionId").(uuid.UUID)
+	collectionId, _ := ctx.Value("RatingId").(uuid.UUID)
 
-	collection, err := collections.GetCollectionById(collectionId)
+	collection, err := collections.GetRatingById(collectionId)
 	if err != nil {
 		logrus.Errorf("error : %s", err.Error())
 		customError, isCustom := err.(*models.CustomError)
