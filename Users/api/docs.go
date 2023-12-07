@@ -18,20 +18,20 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/collections": {
+        "/user": {
             "get": {
-                "description": "Get collections.",
+                "description": "Get users.",
                 "tags": [
-                    "collections"
+                    "users"
                 ],
-                "summary": "Get collections.",
+                "summary": "Get users.",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/models.Collection"
+                                "$ref": "#/definitions/models.User"
                             }
                         }
                     },
@@ -39,19 +39,34 @@ const docTemplate = `{
                         "description": "Something went wrong"
                     }
                 }
+            },
+            "post": {
+                "description": "Adding a user.",
+                "tags": [
+                    "postUser"
+                ],
+                "summary": "Post user.",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "500": {
+                        "description": "Something went wrong"
+                    }
+                }
             }
         },
-        "/collections/{id}": {
+        "/user/{id}": {
             "get": {
-                "description": "Get a collection.",
+                "description": "Get a user.",
                 "tags": [
-                    "collections"
+                    "users"
                 ],
-                "summary": "Get a collection.",
+                "summary": "Get a user.",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Collection UUID formatted ID",
+                        "description": "User UUID formatted ID",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -61,7 +76,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.Collection"
+                            "$ref": "#/definitions/models.User"
                         }
                     },
                     "422": {
@@ -71,17 +86,50 @@ const docTemplate = `{
                         "description": "Something went wrong"
                     }
                 }
+            },
+            "put": {
+                "description": "update a user.",
+                "tags": [
+                    "updateUsers"
+                ],
+                "summary": "update a user.",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "500": {
+                        "description": "Something went wrong"
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete user.",
+                "tags": [
+                    "deleteUser"
+                ],
+                "summary": "Delete user.",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "500": {
+                        "description": "Something went wrong"
+                    }
+                }
             }
         }
     },
     "definitions": {
-        "models.Collection": {
+        "models.User": {
             "type": "object",
             "properties": {
-                "content": {
+                "id": {
                     "type": "string"
                 },
-                "id": {
+                "mail": {
+                    "type": "string"
+                },
+                "name": {
                     "type": "string"
                 }
             }
@@ -95,8 +143,8 @@ var SwaggerInfo = &swag.Spec{
 	Host:             "",
 	BasePath:         "/",
 	Schemes:          []string{"http"},
-	Title:            "middleware/example",
-	Description:      "API to manage collections.",
+	Title:            "middleware/api/user",
+	Description:      "API to manage users.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

@@ -10,20 +10,18 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// GetCollection
-// @Tags         collections
-// @Summary      Get a collection.
-// @Description  Get a collection.
-// @Param        id           	path      string  true  "Collection UUID formatted ID"
-// @Success      200            {object}  models.Collection
-// @Failure      422            "Cannot parse id"
-// @Failure      500            "Something went wrong"
-// @Router       /collections/{id} [get]
-func GetUser(w http.ResponseWriter, r *http.Request) {
+// DeleteUser
+// @Tags         deleteUser
+// @Summary      Delete user.
+// @Description  Delete user.
+// @Success      200
+// @Failure      500             "Something went wrong"
+// @Router       /user/{id} [delete]
+func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	collectionId, _ := ctx.Value("userId").(uuid.UUID)
 
-	collection, err := collections.GetUserById(collectionId)
+	err := collections.DeleteUserById(collectionId)
 	if err != nil {
 		logrus.Errorf("error : %s", err.Error())
 		customError, isCustom := err.(*models.CustomError)
@@ -38,7 +36,6 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	body, _ := json.Marshal(collection)
-	_, _ = w.Write(body)
+
 	return
 }

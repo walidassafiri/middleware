@@ -1,40 +1,62 @@
 basePath: /
 definitions:
-  models.Collection:
+  models.User:
     properties:
-      content:
-        type: string
       id:
+        type: string
+      mail:
+        type: string
+      name:
         type: string
     type: object
 info:
   contact:
     email: justine.bachelard@ext.uca.fr
     name: Justine Bachelard.
-  description: API to manage collections.
-  title: middleware/example
+  description: API to manage users.
+  title: middleware/api/user
   version: 1.0.0
 paths:
-  /collections:
+  /user:
     get:
-      description: Get collections.
+      description: Get users.
       responses:
         "200":
           description: OK
           schema:
             items:
-              $ref: '#/definitions/models.Collection'
+              $ref: '#/definitions/models.User'
             type: array
         "500":
           description: Something went wrong
-      summary: Get collections.
+      summary: Get users.
       tags:
-      - collections
-  /collections/{id}:
+      - users
+    post:
+      description: Adding a user.
+      responses:
+        "200":
+          description: OK
+        "500":
+          description: Something went wrong
+      summary: Post user.
+      tags:
+      - postUser
+  /user/{id}:
+    delete:
+      description: Delete user.
+      responses:
+        "200":
+          description: OK
+        "500":
+          description: Something went wrong
+      summary: Delete user.
+      tags:
+      - deleteUser
     get:
-      description: Get a collection.
+      description: Get a user.
       parameters:
-      - description: Collection UUID formatted ID
+      - description: User UUID formatted ID
         in: path
         name: id
         required: true
@@ -43,14 +65,24 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.Collection'
+            $ref: '#/definitions/models.User'
         "422":
           description: Cannot parse id
         "500":
           description: Something went wrong
-      summary: Get a collection.
+      summary: Get a user.
       tags:
-      - collections
+      - users
+    put:
+      description: update a user.
+      responses:
+        "200":
+          description: OK
+        "500":
+          description: Something went wrong
+      summary: update a user.
+      tags:
+      - updateUsers
 schemes:
 - http
 swagger: "2.0"

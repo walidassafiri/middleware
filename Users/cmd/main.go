@@ -15,16 +15,12 @@ func main() {
 
 	r.Route("/user", func(r chi.Router) {
 		r.Get("/", collections.GetUsers)
-		r.Route("/{id}", func(r chi.Router) {
-			r.Use(collections.Ctx)
-			r.Get("/", collections.GetUser)
-		})
-	})
-	r.Route("/user", func(r chi.Router) {
 		r.Post("/", collections.PostUsers)
 		r.Route("/{id}", func(r chi.Router) {
 			r.Use(collections.Ctx)
 			r.Get("/", collections.GetUser)
+			r.Delete("/", collections.DeleteUser)
+			r.Put("/", collections.UpdateUser)
 		})
 	})
 
@@ -45,8 +41,8 @@ func init() {
 		`CREATE TABLE IF NOT EXISTS users (
 			id VARCHAR(255) PRIMARY KEY NOT NULL UNIQUE,
 			name VARCHAR(255) NOT NULL ,
-			mail VARCHAR(255) NOT NULL ,
-			password VARCHAR(255) NOT NULL 
+			mail VARCHAR(255) NOT NULL 
+		
 			
 		);`,
 	}

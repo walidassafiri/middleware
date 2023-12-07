@@ -9,8 +9,11 @@ type Collection struct {
 	Content string     `json:"content"`
 }
 type User struct {
-	Id       *uuid.UUID `json:"id"`
-	Name     string     `json:"name"`
-	Mail     string     `json:"mail"`
-	Password string     `json:"password"`
+	Id   *uuid.UUID `json:"id"`
+	Name string     `json:"name"`
+	Mail string     `json:"mail"`
+}
+type InsertUser struct {
+	Name string `json:"name"`
+	Mail string `json:"mail"`
 }
