@@ -48,18 +48,20 @@ func GetRatingById(id uuid.UUID) (*models.Rating, error) {
 	}
 	return &collection, err
 }
-func PostRating(id uuid.UUID) (*models.Rating, error) {
+func PostRating(insert models.InsertRating) (error) {
 	db, err := helpers.OpenDB()
 	if err != nil {
-		return nil, err
+		return err
 	}
-	row := db.QueryRow("INSERT INTO ratings(id,score,idUser,idSong,content)VALUES(?,?,?,?,?);", id.String())
-	helpers.CloseDB(db)
-
-	var collection models.Rating
-	err = row.Scan(&collection.Id,&collection.Score,&collection.IdUser,&collection.IdSong,&collection.Content)
+	newUUID, err := uuid.NewV4()
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return &collection, err
+	_, err = db.Exec("INSERT INTO ratings(id,score,idUser,idSong,content)VALUES(?,?,?,?,?);",newUUID.String(), &insert.Score,&insert.IdUser,&insert.IdSong,&insert.Content)
+	helpers.CloseDB(db)
+	if err != nil {
+        return err
+    }
+
+	return err
 }

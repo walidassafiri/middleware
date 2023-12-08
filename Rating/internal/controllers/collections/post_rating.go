@@ -3,6 +3,8 @@ package collections
 import (
 	"encoding/json"
 	"middleware/example/internal/models"
+	"middleware/example/internal/services/collections"
+	"github.com/sirupsen/logrus"
 	"net/http"
 	"fmt"
 	"io/ioutil"
@@ -21,11 +23,15 @@ func PostRating(w http.ResponseWriter, r *http.Request) {
 
 	reqBody, _ := ioutil.ReadAll(r.Body)
 	var post models.InsertRating
-	json.Unmarshal(reqBody, &post)
 
-
-/*
-	collection, err := collections.GetRatingById(collectionId)
+	err := json.Unmarshal(reqBody, &post)
+	if err != nil {
+		fmt.Println("Erreur lors du décodage JSON:", err)
+		return
+	}
+	
+	err = collections.PostRating(post)
+	
 	if err != nil {
 		logrus.Errorf("error : %s", err.Error())
 		customError, isCustom := err.(*models.CustomError)
@@ -40,7 +46,5 @@ func PostRating(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	body, _ := json.Marshal(collection)
-	_, _ = w.Write(body)*/
 	return
 }

@@ -44,3 +44,15 @@ func GetRatingById(id uuid.UUID) (*models.Rating, error) {
 
 	return collection, err
 }
+func PostRating(insert models.InsertRating) (error) {
+	err := repository.PostRating(insert)
+	if err != nil {
+		logrus.Errorf("error while executing query : %s", err.Error())
+		return  &models.CustomError{
+			Message: "Something went wrong",
+			Code:    500,
+		}
+	}
+
+	return err
+}
