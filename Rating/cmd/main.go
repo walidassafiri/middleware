@@ -14,11 +14,13 @@ func main() {
 
 	r.Route("/ratings", func(r chi.Router) {
 		r.Get("/", collections.GetRatings)
+		r.Post("/", collections.PostRating) 
 		r.Route("/{id}", func(r chi.Router) {
 			r.Use(collections.Ctx)
 			r.Get("/", collections.GetRating)
+			r.Delete("/", collections.DeleteRating)
 		})
-		r.Post("/", collections.PostRating)                                    
+		                                   
 	})
 
 	logrus.Info("[INFO] Web server started. Now listening on *:8080")

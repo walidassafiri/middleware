@@ -65,3 +65,15 @@ func PostRating(insert models.InsertRating) (error) {
 
 	return err
 }
+func DeleteRating(id uuid.UUID) (error) {
+	db, err := helpers.OpenDB()
+	if err != nil {
+		return err
+	}
+	_, err = db.Exec("DELETE FROM ratings WHERE id=?;", id.String())
+	helpers.CloseDB(db)
+	if err != nil {
+        return err
+    }
+	return err
+}

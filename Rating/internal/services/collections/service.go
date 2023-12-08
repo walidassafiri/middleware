@@ -56,3 +56,21 @@ func PostRating(insert models.InsertRating) (error) {
 
 	return err
 }
+func DeleteRating(id uuid.UUID) (error) {
+	err := repository.DeleteRating(id)
+	if err != nil {
+		if errors.As(err, &sql.ErrNoRows) {
+			return &models.CustomError{
+				Message: "collection not found",
+				Code:    http.StatusNotFound,
+			}
+		}
+		logrus.Errorf("error retrieving collections : %s", err.Error())
+		return &models.CustomError{
+			Message: "Something went wrong",
+			Code:    500,
+		}
+	}
+
+	return err
+}
