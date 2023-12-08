@@ -77,3 +77,15 @@ func DeleteRating(id uuid.UUID) (error) {
     }
 	return err
 }
+func UpdateRating(id uuid.UUID,upmodel models.UpdateRating) (error) {
+	db, err := helpers.OpenDB()
+	if err != nil {
+		return err
+	}
+	_, err = db.Exec("UPDATE ratings SET score = ?,content =? WHERE id = ?;", &upmodel.Score,&upmodel.Content,id.String())
+	helpers.CloseDB(db)
+	if err != nil {
+        return err
+    }
+	return err
+}

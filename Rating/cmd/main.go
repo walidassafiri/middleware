@@ -19,6 +19,7 @@ func main() {
 			r.Use(collections.Ctx)
 			r.Get("/", collections.GetRating)
 			r.Delete("/", collections.DeleteRating)
+			r.Put("/", collections.UpdateRating)
 		})
 		                                   
 	})
