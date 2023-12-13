@@ -5,7 +5,6 @@ import (
 	"github.com/gofrs/uuid"
 	"github.com/sirupsen/logrus"
 	"middleware/example/internal/models"
-	"middleware/example/internal/helpers"
 	"middleware/example/internal/repositories/collections"
 	"net/http"
 )
@@ -19,11 +18,11 @@ import (
 // @Failure      422            "Cannot parse id"
 // @Failure      500            "Something went wrong"
 // @Router       /collections/{id} [get]
-func GetAllSongs(w http.ResponseWriter, r *http.Request) {
+func GetSong(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	songId, _ := ctx.Value("songId").(uuid.UUID)
+	collectionId, _ := ctx.Value("collectionId").(uuid.UUID)
 
-	song, err := collections.GetSongsById(songId)
+	collection, err := collections.GetSongById(collectionId)
 	if err != nil {
 		logrus.Errorf("error : %s", err.Error())
 		customError, isCustom := err.(*models.CustomError)
@@ -38,24 +37,7 @@ func GetAllSongs(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	body, _ := json.Marshal(song)
+	body, _ := json.Marshal(collection)
 	_, _ = w.Write(body)
 	return
-}
-
-
-func CreateSong(song models.Song) error {
-	db, err := helpers.OpenDB()
-	if err != nil {
-		return err
-	}
-
-	_, err = db.Exec("INSERT INTO songs (, artist, title, album, content) VALUES (?, ?, ?, ?, ?)",
-		song.Id.String(), song.Artist, song.Title, song.Album, song.Content)
-	helpers.CloseDB(db)
-	if err != nil {
-		return err
-	}
-
-	return nil
 }

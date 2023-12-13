@@ -17,7 +17,7 @@ import (
 // @Router       /collections [get]
 func GetSongs(w http.ResponseWriter, _ *http.Request) {
 	// calling service
-	song, err := collections.GetAllSongs()
+	collections, err := collections.GetAllSongs()
 	if err != nil {
 		// logging error
 		logrus.Errorf("error : %s", err.Error())
@@ -35,7 +35,7 @@ func GetSongs(w http.ResponseWriter, _ *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	body, _ := json.Marshal(song)
+	body, _ := json.Marshal(collections)
 	_, _ = w.Write(body)
 	return
 }

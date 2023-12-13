@@ -3,11 +3,12 @@ package collections
 import (
 	"database/sql"
 	"errors"
-	"github.com/gofrs/uuid"
-	"github.com/sirupsen/logrus"
 	"middleware/example/internal/models"
 	repository "middleware/example/internal/repositories/collections"
 	"net/http"
+
+	"github.com/gofrs/uuid"
+	"github.com/sirupsen/logrus"
 )
 
 func GetAllSongs() ([]models.Song, error) {
@@ -26,8 +27,8 @@ func GetAllSongs() ([]models.Song, error) {
 	return songs, nil
 }
 
-func GetSongsById(id uuid.UUID) (*models.Song, error) {
-	song, err := repository.GetSongsById(id)
+func GetSongById(id uuid.UUID) (*models.Song, error) {
+	song, err := repository.GetSongById(id)
 	if err != nil {
 		if errors.As(err, &sql.ErrNoRows) {
 			return nil, &models.CustomError{
@@ -43,4 +44,37 @@ func GetSongsById(id uuid.UUID) (*models.Song, error) {
 	}
 
 	return song, err
+}
+
+func CreateSong(song models.Song) (models.Song, error) {
+	createdSong, err := repository.CreateSong(song)
+	if err != nil {
+		return models.Song{}, &models.CustomError{
+			Message: "Something went wrong",
+			Code:    500,
+		}
+	}
+	return createdSong, nil
+}
+
+func UpdateSong(id uuid.UUID, song models.Song) (models.Song, error) {
+	updatedSong, err := repository.UpdateSong(id, song)
+	if err != nil {
+		return models.Song{}, &models.CustomError{
+			Message: "Something went wrong",
+			Code:    500,
+		}
+	}
+	return updatedSong, nil
+}
+
+func DeleteSong(id uuid.UUID) error {
+	err := repository.DeleteSong(id)
+	if err != nil {
+		return &models.CustomError{
+			Message: "Something went wrong",
+			Code:    500,
+		}
+	}
+	return nil
 }
