@@ -89,7 +89,7 @@ func DeleteSong(id uuid.UUID) error {
 	}
 
 	_, err = db.Exec("DELETE FROM song WHERE id=?", id.String())
-	helpers.OpenDB()
+	helpers.CloseDB(db)
 	if err != nil {
 		return err
 	}

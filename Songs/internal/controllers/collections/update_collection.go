@@ -22,7 +22,7 @@ import (
 // @Router       /collections/{id} [put]
 func UpdateSong(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	songId, _ := ctx.Value("songId").(uuid.UUID)
+	collectionID, _ := ctx.Value("collectionId").(uuid.UUID)
 
 	var updatedSong models.Song
 	err := json.NewDecoder(r.Body).Decode(&updatedSong)
@@ -32,7 +32,7 @@ func UpdateSong(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	song, err := collections.UpdateSong(songId, updatedSong)
+	song, err := collections.UpdateSong(collectionID, updatedSong)
 	if err != nil {
 		logrus.Errorf("error updating song: %s", err.Error())
 		customError, isCustom := err.(*models.CustomError)
