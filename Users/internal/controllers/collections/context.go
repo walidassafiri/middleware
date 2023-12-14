@@ -4,11 +4,12 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"middleware/example/internal/models"
+	"net/http"
+
 	"github.com/go-chi/chi/v5"
 	"github.com/gofrs/uuid"
 	"github.com/sirupsen/logrus"
-	"middleware/example/internal/models"
-	"net/http"
 )
 
 func Ctx(next http.Handler) http.Handler {
@@ -26,7 +27,7 @@ func Ctx(next http.Handler) http.Handler {
 			return
 		}
 
-		ctx := context.WithValue(r.Context(), "collectionId", collectionId)
+		ctx := context.WithValue(r.Context(), "userId", collectionId)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }

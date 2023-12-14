@@ -10,18 +10,18 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// GetCollection
-// @Tags         collections
-// @Summary      Get a collection.
-// @Description  Get a collection.
-// @Param        id           	path      string  true  "Collection UUID formatted ID"
-// @Success      200            {object}  models.Collection
+// GetUser
+// @Tags         users
+// @Summary      Get a user.
+// @Description  Get a user.
+// @Param        id           	path      string  true  "User UUID formatted ID"
+// @Success      200            {object}  models.User
 // @Failure      422            "Cannot parse id"
 // @Failure      500            "Something went wrong"
-// @Router       /collections/{id} [get]
-func GetCollection(w http.ResponseWriter, r *http.Request) {
+// @Router       /user/{id} [get]
+func GetUser(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	collectionId, _ := ctx.Value("collectionId").(uuid.UUID)
+	collectionId, _ := ctx.Value("userId").(uuid.UUID)
 
 	collection, err := collections.GetUserById(collectionId)
 	if err != nil {

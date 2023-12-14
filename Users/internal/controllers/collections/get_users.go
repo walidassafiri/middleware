@@ -9,13 +9,13 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// GetCollections
-// @Tags         collections
-// @Summary      Get collections.
-// @Description  Get collections.
-// @Success      200            {array}  models.Collection
+// GetUsers
+// @Tags         users
+// @Summary      Get users.
+// @Description  Get users.
+// @Success      200            {array}  models.User
 // @Failure      500             "Something went wrong"
-// @Router       /collections [get]
+// @Router       /user [get]
 func GetUsers(w http.ResponseWriter, _ *http.Request) {
 	// calling service
 	collections, err := collections.GetAllUsers()
