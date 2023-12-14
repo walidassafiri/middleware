@@ -26,7 +26,7 @@ func Ctx(next http.Handler) http.Handler {
 			return
 		}
 
-		ctx := context.WithValue(r.Context(), "collectionId", collectionId)
+		ctx := context.WithValue(r.Context(), "RatingId", collectionId)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
