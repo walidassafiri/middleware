@@ -46,15 +46,15 @@ func GetSongById(id uuid.UUID) (*models.Song, error) {
 	return song, err
 }
 
-func CreateSong(song models.Song) (models.Song, error) {
-	createdSong, err := repository.CreateSong(song)
+func CreateSong(song models.Song) (error) {
+	err := repository.CreateSong(song)
 	if err != nil {
-		return models.Song{}, &models.CustomError{
+		return &models.CustomError{
 			Message: "Something went wrong",
 			Code:    500,
 		}
 	}
-	return createdSong, nil
+	return nil
 }
 
 func UpdateSong(id uuid.UUID, song models.Song) (models.Song, error) {

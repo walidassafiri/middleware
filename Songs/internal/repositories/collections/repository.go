@@ -50,20 +50,25 @@ func GetSongById(id uuid.UUID) (*models.Song, error) {
 	return &song, err
 }
 
-func CreateSong(song models.Song) (models.Song, error) {
+func CreateSong(song models.Song) (error) {
     db, err := helpers.OpenDB()
     if err != nil {
-        return models.Song{}, err
+        return err
     }
+
+	newUUID, err := uuid.NewV4()
+	if err != nil {
+		return err
+	}
 
     _, err = db.Exec("INSERT INTO song (id, artist, title, album, content) VALUES (?, ?, ?, ?, ?)",
-        song.Id.String(), song.Artist, song.Title, song.Album, song.Content)
+	newUUID.String(), song.Artist, song.Title, song.Album, song.Content)
     helpers.CloseDB(db)
     if err != nil {
-        return models.Song{}, err
+        return err
     }
 
-    return song, nil
+    return nil
 }
 
 func UpdateSong(id uuid.UUID, song models.Song) (models.Song, error) {

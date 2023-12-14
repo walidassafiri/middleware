@@ -18,10 +18,10 @@ func main() {
 		r.Route("/{id}", func(r chi.Router) {
 			r.Use(collections.Ctx)
 			r.Get("/", collections.GetSong)
-			r.Put("/update", collections.UpdateSong)
-			r.Delete("/delete", collections.DeleteSong)
+			r.Put("/", collections.UpdateSong)
+			r.Delete("/", collections.DeleteSong)
 		})
-		r.Post("/add", collections.CreateSong)
+		r.Post("/", collections.CreateSong)
 	})
 
 	logrus.Info("[INFO] Web server started. Now listening on *:8080")

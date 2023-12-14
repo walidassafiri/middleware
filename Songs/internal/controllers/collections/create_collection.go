@@ -1,6 +1,8 @@
 package collections
 
 import (
+	"fmt"
+	"io/ioutil"
 	"encoding/json"
 	"github.com/sirupsen/logrus"
 	"middleware/example/internal/models"
@@ -19,26 +21,32 @@ import (
 // @Router       /collections [post]
 func CreateSong(w http.ResponseWriter, r *http.Request) {
 	// Parse the request body to get the song details
+	reqBody, _ := ioutil.ReadAll(r.Body)
 	var newSong models.Song
-	decoder := json.NewDecoder(r.Body)
-	if err := decoder.Decode(&newSong); err != nil {
-		logrus.Errorf("Error decoding request body: %s", err.Error())
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
 
-	// Validate the song details (you can implement your own validation logic)
-
-	// Create the song in the database
-	createdSong, err := collections.CreateSong(newSong)
+	err := json.Unmarshal(reqBody, &newSong)
 	if err != nil {
-		logrus.Errorf("Error creating song: %s", err.Error())
-		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Println("Erreur lors du décodage JSON:", err)
 		return
 	}
 
-	// Return the created song as JSON
-	w.WriteHeader(http.StatusCreated)
-	responseBody, _ := json.Marshal(createdSong)
-	_, _ = w.Write(responseBody)
+	err = collections.CreateSong(newSong)
+
+	if err != nil {
+		logrus.Errorf("error : %s", err.Error())
+		customError, isCustom := err.(*models.CustomError)
+		if isCustom {
+			w.WriteHeader(customError.Code)
+			body, _ := json.Marshal(customError)
+			_, _ = w.Write(body)
+		} else {
+			w.WriteHeader(http.StatusInternalServerError)
+		}
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+
+	return
+
 }
