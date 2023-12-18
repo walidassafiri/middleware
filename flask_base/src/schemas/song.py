@@ -1,44 +1,34 @@
-# schemas/song.py
 from marshmallow import Schema, fields, validates_schema, ValidationError
 
 
+# Schéma utilisateur de sortie (renvoyé au front)
 class SongSchema(Schema):
     id = fields.String(description="UUID")
-    Artist = fields.String(description="Artist")
-    Title = fields.String(description="Title")
-    Album = fields.String(description="Album")
-    Content = fields.String(description="Content")
-
+    inscription_date = fields.DateTime(description="Inscription date")
+    name = fields.String(description="Name")
+    username = fields.String(description="Username")
+    
     @staticmethod
     def is_empty(obj):
         return (not obj.get("id") or obj.get("id") == "") and \
-               (not obj.get("Artist") or obj.get("Artist") == "") and \
-               (not obj.get("Title") or obj.get("Title") == "") and \
-               (not obj.get("Album") or obj.get("Album") == "") and \
-               (not obj.get("Content") or obj.get("Content") == "")  
+               (not obj.get("name") or obj.get("name") == "") and \
+               (not obj.get("username") or obj.get("username") == "") and \
+               (not obj.get("inscription_date") or obj.get("inscription_date") == "")
 
 
-class BaseSongSchema(Schema):
-    Artist = fields.String(description="Artist")
-    Title = fields.String(description="Title")
-    Album = fields.String(description="Album")
-    Content = fields.String(description="Content")
+class BaseUserSchema(Schema):
+    name = fields.String(description="Name")
+    password = fields.String(description="Password")
+    username = fields.String(description="Username")
 
 
-# Schéma pour la création d'une chanson
-class SongCreateSchema(SongSchema):
-    pass
-
-
-# Schéma pour la mise à jour d'une chanson
-class SongUpdateSchema(SongSchema):
+# Schéma utilisateur de modification (name, username, password)
+class UserUpdateSchema(BaseUserSchema):
+    # permet de définir dans quelles conditions le schéma est validé ou nom
     @validates_schema
     def validates_schemas(self, data, **kwargs):
-        if not (("Artist" in data and data["Artist"] != "") or
-                ("Title" in data and data["Title"] != "") or
-                ("Album" in data and data["Album"] != "") or
-                ("Content" in data and data["Content"] != "")):
-            raise ValidationError("at least one of ['Artist','Title','Album','Content'] must be specified")
-
-
+        if not (("name" in data and data["name"] != "") or
+                ("username" in data and data["username"] != "") or
+                ("password" in data and data["password"] != "")):
+            raise ValidationError("at least one of ['name','username','password'] must be specified")
 
