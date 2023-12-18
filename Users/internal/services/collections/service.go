@@ -11,7 +11,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func GetAllUsers() ([]models.User, error) {
+func GetAllUsers() ([]models.UserPublic, error) {
 	var err error
 	// calling repository
 	collections, err := repository.GetAllUsers()
@@ -27,7 +27,7 @@ func GetAllUsers() ([]models.User, error) {
 	return collections, nil
 }
 
-func GetUserById(id uuid.UUID) (*models.User, error) {
+func GetUserById(id uuid.UUID) (*models.UserPublic, error) {
 	collection, err := repository.GetUserById(id)
 	if err != nil {
 		if errors.As(err, &sql.ErrNoRows) {
@@ -45,25 +45,25 @@ func GetUserById(id uuid.UUID) (*models.User, error) {
 
 	return collection, err
 }
-func SetUser(name string, mail string) error {
+func SetUser(name string, mail string, password string) (string, error) {
 	//var err error
-	err := repository.SetUser(name, mail)
+	uuid, err := repository.SetUser(name, mail, password)
 	if err != nil {
 		if errors.As(err, &sql.ErrNoRows) {
-			return &models.CustomError{
+			return "", &models.CustomError{
 				Message: " not found",
 				Code:    http.StatusNotFound,
 			}
 		}
 		logrus.Errorf("error adding user : %s", err.Error())
-		return &models.CustomError{
+		return "", &models.CustomError{
 			Message: "Something went wrong",
 			Code:    500,
 		}
 	}
 	// managing errors
 
-	return nil
+	return uuid, nil
 }
 
 func DeleteUserById(id uuid.UUID) error {
@@ -83,8 +83,8 @@ func DeleteUserById(id uuid.UUID) error {
 	}
 	return err
 }
-func UpdateUser(id uuid.UUID, name string, mail string) error {
-	err := repository.UpdateUser(id, name, mail)
+func UpdateUser(id uuid.UUID, name string, mail string, password string) error {
+	err := repository.UpdateUser(id, name, mail, password)
 	if err != nil {
 		if errors.As(err, &sql.ErrNoRows) {
 			return &models.CustomError{

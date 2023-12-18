@@ -59,7 +59,9 @@ def login():
     # parser le body
     try:
         # it is possible to use marshmallow Schemas validation (used also for doc) or custom classes
+        
         user_login = UserLoginSchema().loads(json_data=request.data.decode('utf-8'))
+        
     except ValidationError as e:
         error = UnprocessableEntitySchema().loads(json.dumps({"message": e.messages.__str__()}))
         return error, error.get("code")

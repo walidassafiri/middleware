@@ -28,7 +28,7 @@ func PostUsers(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	erreur := collections.SetUser(post.Name, post.Mail)
+	uuid, erreur := collections.SetUser(post.Name, post.Mail, post.Password)
 	if erreur != nil {
 		logrus.Errorf("error : %s", erreur.Error())
 		customError, isCustom := erreur.(*models.CustomError)
@@ -43,5 +43,9 @@ func PostUsers(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
+
+	id := models.UserId{Id: uuid}
+	body, _ := json.Marshal(id)
+	w.Write(body)
 	return
 }

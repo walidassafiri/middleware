@@ -4,9 +4,10 @@ from src.schemas.user import BaseUserSchema
 
 # Schéma utilisateur de connexion
 class UserLoginSchema(Schema):
-    username = fields.String(description="Username", required=True)
-    password = fields.String(description="Password", required=True)
-
+    
+    username = fields.String(description="username", required=True)
+    password = fields.String(description="password", required=True)
+    
 
 # Schéma utilisateur d'enregistrement
 class UserRegisterSchema(BaseUserSchema):

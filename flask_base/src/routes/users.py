@@ -52,7 +52,46 @@ def get_user(id):
           - users
     """
     return users_service.get_user(id)
-
+@users.route('', methods=['GET'])
+@login_required
+def getAllUsers():
+    """
+    ---
+    get:
+      description: Getting a user
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: uuidv4
+          required: true
+          description: UUID of user id
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema: User
+            application/yaml:
+              schema: User
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema: Unauthorized
+            application/yaml:
+              schema: Unauthorized
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema: NotFound
+            application/yaml:
+              schema: NotFound
+      tags:
+          - users
+    """
+    return users_service.getAllUsers()
 
 @users.route('/<id>', methods=['PUT'])
 @login_required
@@ -127,3 +166,43 @@ def put_user(id):
     except Exception:
         error = SomethingWentWrongSchema().loads("{}")
         return error, error.get("code")
+@users.route('/<id>', methods=['DELETE'])
+@login_required
+def delete_user(id):
+    """
+    ---
+    get:
+      description: Getting a user
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: uuidv4
+          required: true
+          description: UUID of user id
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema: User
+            application/yaml:
+              schema: User
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema: Unauthorized
+            application/yaml:
+              schema: Unauthorized
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema: NotFound
+            application/yaml:
+              schema: NotFound
+      tags:
+          - users
+    """
+    return users_service.delete_user(id)

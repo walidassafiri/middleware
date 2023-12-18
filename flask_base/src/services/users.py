@@ -3,32 +3,43 @@ import requests
 from sqlalchemy import exc
 from marshmallow import EXCLUDE
 from flask_login import current_user
-
+from flask import jsonify
 from src.schemas.user import UserSchema
 from src.models.user import User as UserModel
 from src.models.http_exceptions import *
 import src.repositories.users as users_repository
+from src.schemas.errors import *
 
-
-users_url = "http://localhost:4000/users/"  # URL de l'API users (golang)
+users_url = "http://localhost:8088/users/"  # URL de l'API users (golang)
 
 
 def get_user(id):
     response = requests.request(method="GET", url=users_url+id)
+    try:
+        
+        users_repository.delete_user(id)
+    except Exception:
+        error = NotFoundSchema().loads("{}")
+        return error, error.get("code")
     return response.json(), response.status_code
-
+def getAllUsers():
+    response = requests.request(method="GET", url=users_url)
+    print(response.json())
+    return response.json(), response.status_code
 
 def create_user(user_register):
     # on récupère le modèle utilisateur pour la BDD
     user_model = UserModel.from_dict_with_clear_password(user_register)
+    print(user_model)
     # on récupère le schéma utilisateur pour la requête vers l'API users
     user_schema = UserSchema().loads(json.dumps(user_register), unknown=EXCLUDE)
-
+    
     # on crée l'utilisateur côté API users
     response = requests.request(method="POST", url=users_url, json=user_schema)
-    if response.status_code != 201:
+    print(response.json()["id"] )
+    """if response.status_code != 201:
         return response.json(), response.status_code
-
+    """
     # on ajoute l'utilisateur dans la base de données
     # pour que les données entre API et BDD correspondent
     try:
@@ -79,3 +90,24 @@ def get_user_from_db(username):
 
 def user_exists(username):
     return get_user_from_db(username) is not None
+
+def delete_user(id):
+    
+    requests.request(method="DELETE", url=users_url+id)
+    
+    try:
+        
+        users_repository.delete_user(id)
+    except Exception:
+        error = NotFoundSchema().loads("{}")
+        return error, error.get("code")
+
+    response = {
+            'status': 'success',
+            'message': f'Resource avec ID {id} supprimée avec succès.'
+        }
+    return jsonify(response), 200
+
+
+
+    

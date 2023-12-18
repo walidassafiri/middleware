@@ -31,7 +31,7 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	erreur := collections.UpdateUser(collectionId, post.Name, post.Mail)
+	erreur := collections.UpdateUser(collectionId, post.Name, post.Mail, post.Password)
 	if erreur != nil {
 		logrus.Errorf("error : %s", erreur.Error())
 		customError, isCustom := erreur.(*models.CustomError)

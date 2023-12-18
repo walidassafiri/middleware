@@ -8,7 +8,7 @@ import (
 	"github.com/gofrs/uuid"
 )
 
-func GetAllUsers() ([]models.User, error) {
+func GetAllUsers() ([]models.UserPublic, error) {
 	db, err := helpers.OpenDB()
 	if err != nil {
 		return nil, err
@@ -20,9 +20,9 @@ func GetAllUsers() ([]models.User, error) {
 	}
 
 	// parsing datas in object slice
-	collections := []models.User{}
+	collections := []models.UserPublic{}
 	for rows.Next() {
-		var data models.User
+		var data models.UserPublic
 		err = rows.Scan(&data.Id, &data.Name, &data.Mail)
 		if err != nil {
 			return nil, err
@@ -35,7 +35,7 @@ func GetAllUsers() ([]models.User, error) {
 	return collections, err
 }
 
-func GetUserById(id uuid.UUID) (*models.User, error) {
+func GetUserById(id uuid.UUID) (*models.UserPublic, error) {
 	db, err := helpers.OpenDB()
 	if err != nil {
 		return nil, err
@@ -43,24 +43,24 @@ func GetUserById(id uuid.UUID) (*models.User, error) {
 	row := db.QueryRow("SELECT id, name, mail FROM users WHERE id=?", id.String())
 	helpers.CloseDB(db)
 
-	var collection models.User
+	var collection models.UserPublic
 	err = row.Scan(&collection.Id, &collection.Name, &collection.Mail)
 	if err != nil {
 		return nil, err
 	}
 	return &collection, err
 }
-func SetUser(name string, mail string) error {
+func SetUser(name string, mail string, password string) (string, error) {
 	db, err := helpers.OpenDB()
 	if err != nil {
-		return err
+		return "", err
 	}
 	uuid, err := uuid.NewV4()
 
-	result, err := db.Exec("INSERT INTO users (id, name, mail, password) VALUES (?, ?, ?, ?)", uuid.String(), name, mail, "password")
+	result, err := db.Exec("INSERT INTO users (id, name, mail, password) VALUES (?, ?, ?, ?)", uuid.String(), name, mail, password)
 	if err != nil {
 		fmt.Println("Erreur lors de l'insertion dans la base de données:", err)
-		return err
+		return "", err
 	}
 
 	rowsAffected, _ := result.RowsAffected()
@@ -72,7 +72,7 @@ func SetUser(name string, mail string) error {
 	if err != nil {
 		return err
 	}*/
-	return err
+	return uuid.String(), err
 }
 func DeleteUserById(userId uuid.UUID) error {
 	db, err := helpers.OpenDB()
@@ -89,13 +89,13 @@ func DeleteUserById(userId uuid.UUID) error {
 
 	return err
 }
-func UpdateUser(userId uuid.UUID, name string, mail string) error {
+func UpdateUser(userId uuid.UUID, name string, mail string, password string) error {
 	db, err := helpers.OpenDB()
 	if err != nil {
 		return err
 	}
 
-	_, err = db.Exec("UPDATE users SET name=? , mail=? WHERE id=?", name, mail, userId)
+	_, err = db.Exec("UPDATE users SET name=? , mail=?, password=? WHERE id=?", name, mail, password, userId)
 	if err != nil {
 		fmt.Println("Erreur lors de la suppression dans la base de données:", err)
 	}

@@ -9,7 +9,7 @@ from src.schemas.errors import UnauthorizedSchema
 
 def config_app():
     # db localisation et nom
-    uri = 'sqlite:///./users.db'
+    uri = 'sqlite:///./collections.db'
     app.app_context().push()
 
     # os.urandom permet de générer un nouveau secret de session (notamment authentification)
