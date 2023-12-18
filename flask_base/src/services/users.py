@@ -17,14 +17,14 @@ def get_user(id):
     response = requests.request(method="GET", url=users_url+id)
     try:
         
-        users_repository.delete_user(id)
+        users_repository.get_user(id)
     except Exception:
         error = NotFoundSchema().loads("{}")
         return error, error.get("code")
     return response.json(), response.status_code
 def getAllUsers():
     response = requests.request(method="GET", url=users_url)
-    print(response.json())
+    
     return response.json(), response.status_code
 
 def create_user(user_register):
@@ -58,10 +58,12 @@ def modify_user(id, user_update):
 
     # s'il y a quelque chose à changer côté API (username, name)
     user_schema = UserSchema().loads(json.dumps(user_update), unknown=EXCLUDE)
+    print(user_schema)
     response = None
     if not UserSchema.is_empty(user_schema):
         # on lance la requête de modification
         response = requests.request(method="PUT", url=users_url+id, json=user_schema)
+        
         if response.status_code != 200:
             return response.json(), response.status_code
 
