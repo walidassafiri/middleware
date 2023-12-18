@@ -11,12 +11,17 @@ from src.models.http_exceptions import *
 import src.repositories.users as users_repository
 from src.schemas.errors import *
 
-songs_url = "http://localhost:8082/songs/"  # URL de l'API users (golang)
+songs_url = "http://localhost:8092/songs/"  # URL de l'API users (golang)
 ratings_url = "http://localhost:8089/ratings/"
 
-def getAllRatingsbyIdSong(id):
-    response_songs = requests.request(method="GET", url=songs_url+id)
+def getAllRatingsbyIdSong(idSong):
     response_ratings = requests.request(method="GET", url=ratings_url)
 
-    return response_ratings.ratings(), response_ratings.status_code
+# Filtré 
+    resultat =[] 
+    for item in response_ratings.json():
+        if item["idSong"] == idSong:
+            resultat.append(item)
+
+    return resultat, response_ratings.status_code
 

@@ -10,7 +10,7 @@ from src.models.http_exceptions import *
 import src.repositories.users as users_repository
 from src.schemas.errors import *
 
-users_url = "http://localhost:8088/users/"  # URL de l'API users (golang)
+users_url = "http://localhost:8050/users/"  # URL de l'API users (golang)
 
 
 def get_user(id):

@@ -41,4 +41,4 @@ app.register_blueprint(swagger_ui_blueprint, url_prefix=SWAGGER_URL)
 
 # python main entrance program
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=8889, debug=False)
+    app.run(host='0.0.0.0', port=8785, debug=False)
