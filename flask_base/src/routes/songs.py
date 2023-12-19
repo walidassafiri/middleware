@@ -129,3 +129,135 @@ def addRatingbySong(id):
     except (NotFound):
       error = UnauthorizedSchema().loads("{}")
       return error, error.get("code")
+
+@songs.route('/<id>/ratings/<rating_id>', methods=['DELETE'])
+@login_required
+def DeleteRatingtoSong(id,rating_id):
+    """
+    ---
+    post:
+      description: Register
+      requestBody:
+        required: true
+        content:
+            application/json:
+                schema: UserRegister
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: User
+            application/yaml:
+              schema: User
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema: Unauthorized
+            application/yaml:
+              schema: Unauthorized
+        '403':
+          description: Already logged in
+          content:
+            application/json:
+              schema: Forbidden
+            application/yaml:
+              schema: Forbidden
+        '409':
+          description: User already exists
+          content:
+            application/json:
+              schema: Conflict
+            application/yaml:
+              schema: Conflict
+        '422':
+          description: Unprocessable entity
+          content:
+            application/json:
+              schema: UnprocessableEntity
+            application/yaml:
+              schema: UnprocessableEntity
+        '500':
+          description: Something went wrong
+          content:
+            application/json:
+              schema: SomethingWentWrong
+            application/yaml:
+              schema: SomethingWentWrong
+      tags:
+          - auth
+          - users
+    """
+    # parser le body
+    try:
+      return songs_service.deleteRatingtoSong(id,rating_id)
+    except (NotFound):
+      error = UnauthorizedSchema().loads("{}")
+      return error, error.get("code")
+
+@songs.route('/<id>/ratings/<rating_id>', methods=['GET'])
+@login_required
+def GetRatingtoSong(id,rating_id):
+    """
+    ---
+    post:
+      description: Register
+      requestBody:
+        required: true
+        content:
+            application/json:
+                schema: UserRegister
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: User
+            application/yaml:
+              schema: User
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema: Unauthorized
+            application/yaml:
+              schema: Unauthorized
+        '403':
+          description: Already logged in
+          content:
+            application/json:
+              schema: Forbidden
+            application/yaml:
+              schema: Forbidden
+        '409':
+          description: User already exists
+          content:
+            application/json:
+              schema: Conflict
+            application/yaml:
+              schema: Conflict
+        '422':
+          description: Unprocessable entity
+          content:
+            application/json:
+              schema: UnprocessableEntity
+            application/yaml:
+              schema: UnprocessableEntity
+        '500':
+          description: Something went wrong
+          content:
+            application/json:
+              schema: SomethingWentWrong
+            application/yaml:
+              schema: SomethingWentWrong
+      tags:
+          - auth
+          - users
+    """
+    # parser le body
+    try:
+      return songs_service.getRatingtoSong(id,rating_id)
+    except (NotFound):
+      error = UnauthorizedSchema().loads("{}")
+      return error, error.get("code")

@@ -16,6 +16,7 @@ songs_url = "http://localhost:8092/songs/"  # URL de l'API users (golang)
 ratings_url = "http://localhost:8089/ratings/"
 
 def getAllRatingsbyIdSong(idSong):
+
     if not isSongIdValid(idSong):
         raise NotFound
     response_ratings = requests.request(method="GET", url=ratings_url)
@@ -34,9 +35,21 @@ def isSongIdValid(idSong):
         return True
     else:
         return False
-
+def isRatingIdValid(idRating):
+    verif = requests.request(method="GET", url=ratings_url+idRating)
+    if verif.status_code == 200:
+        return True
+    else:
+        return False
+def isUserIdtoRatingValid(idRating):
+    verif = requests.request(method="GET", url=ratings_url+idRating)
+    if verif.json()["idUser"] == current_user.id:
+        return True
+    else:
+        return False
 
 def addRatingbySong(idSong,rating_add):
+
     if not isSongIdValid(idSong):
         raise NotFound
 
@@ -47,8 +60,22 @@ def addRatingbySong(idSong,rating_add):
 
     response_ratings = requests.request(method="POST", url=ratings_url,json=UpdateRating_schema)
 
-   
-   
-    jsontest= json.dumps(rating_add)
-    print(response_ratings)
     return "", response_ratings.status_code
+
+def deleteRatingtoSong(idSong,idRating):
+
+    if not isSongIdValid(idSong) or not isRatingIdValid(idRating) or  not isUserIdtoRatingValid(idRating):
+        raise NotFound
+
+    response_ratings = requests.request(method="DELETE", url=ratings_url+idRating)
+
+    return "", response_ratings.status_code
+
+def getRatingtoSong(idSong,idRating):
+
+    if not isSongIdValid(idSong) or not isRatingIdValid(idRating):
+        raise NotFound
+    
+    response_ratings = requests.request(method="GET", url=ratings_url+idRating)
+
+    return response_ratings.json(), response_ratings.status_code
