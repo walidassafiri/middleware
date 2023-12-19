@@ -16,19 +16,23 @@ class SongSchema(Schema):
                (not obj.get("inscription_date") or obj.get("inscription_date") == "")
 
 
-class BaseUserSchema(Schema):
-    name = fields.String(description="Name")
-    password = fields.String(description="Password")
-    username = fields.String(description="Username")
+class BaseRatingSchema(Schema):
+    score = fields.String(description="score")
+    content = fields.String(description="content")
+
+class UpdateRatingSchema(Schema):
+    score = fields.String(description="score")
+    content = fields.String(description="content")
+    idSong = fields.String(description="idSong")
+    idUser = fields.String(description="idUser")
 
 
-# Schéma utilisateur de modification (name, username, password)
-class UserUpdateSchema(BaseUserSchema):
+# Schéma utilisateur de modification (score, content)
+class SongUpdateSchema(BaseRatingSchema):
     # permet de définir dans quelles conditions le schéma est validé ou nom
     @validates_schema
     def validates_schemas(self, data, **kwargs):
-        if not (("name" in data and data["name"] != "") or
-                ("username" in data and data["username"] != "") or
-                ("password" in data and data["password"] != "")):
-            raise ValidationError("at least one of ['name','username','password'] must be specified")
+        if not (("score" in data and data["score"] != "") or
+                ("content" in data and data["content"] != "")):
+            raise ValidationError("at least one of ['score','content'] must be specified")
 
