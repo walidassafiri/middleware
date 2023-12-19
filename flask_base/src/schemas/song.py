@@ -26,6 +26,11 @@ class UpdateRatingSchema(Schema):
     idSong = fields.String(description="idSong")
     idUser = fields.String(description="idUser")
 
+class SetRatingSchema(Schema):
+    score = fields.String(description="score")
+    content = fields.String(description="content")
+    idSong = fields.String(description="idSong")
+
 
 # Schéma utilisateur de modification (score, content)
 class SongUpdateSchema(BaseRatingSchema):

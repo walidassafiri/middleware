@@ -261,3 +261,74 @@ def GetRatingtoSong(id,rating_id):
     except (NotFound):
       error = UnauthorizedSchema().loads("{}")
       return error, error.get("code")
+@songs.route('/<id>/ratings/<rating_id>', methods=['PUT'])
+@login_required
+def SetRatingtoSong(id,rating_id):
+    """
+    ---
+    post:
+      description: Register
+      requestBody:
+        required: true
+        content:
+            application/json:
+                schema: UserRegister
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: User
+            application/yaml:
+              schema: User
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema: Unauthorized
+            application/yaml:
+              schema: Unauthorized
+        '403':
+          description: Already logged in
+          content:
+            application/json:
+              schema: Forbidden
+            application/yaml:
+              schema: Forbidden
+        '409':
+          description: User already exists
+          content:
+            application/json:
+              schema: Conflict
+            application/yaml:
+              schema: Conflict
+        '422':
+          description: Unprocessable entity
+          content:
+            application/json:
+              schema: UnprocessableEntity
+            application/yaml:
+              schema: UnprocessableEntity
+        '500':
+          description: Something went wrong
+          content:
+            application/json:
+              schema: SomethingWentWrong
+            application/yaml:
+              schema: SomethingWentWrong
+      tags:
+          - auth
+          - users
+    """
+    # parser le body
+    try:
+      rating_upt = SongUpdateSchema().loads(json_data=request.data.decode('utf-8'))
+    except ValidationError as e:
+      error = UnprocessableEntitySchema().loads(json.dumps({"message": e.messages.__str__()}))
+      return error, error.get("code")
+
+    try:
+      return songs_service.setRatingtoSong(id,rating_id,rating_upt)
+    except (NotFound):
+      error = UnauthorizedSchema().loads("{}")
+      return error, error.get("code")

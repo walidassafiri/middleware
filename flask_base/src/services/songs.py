@@ -79,3 +79,12 @@ def getRatingtoSong(idSong,idRating):
     response_ratings = requests.request(method="GET", url=ratings_url+idRating)
 
     return response_ratings.json(), response_ratings.status_code
+
+def setRatingtoSong(idSong,idRating,rating_upt):
+
+    if not isSongIdValid(idSong) or not isRatingIdValid(idRating) or  not isUserIdtoRatingValid(idRating):
+        raise NotFound
+    
+    response_ratings = requests.request(method="PUT", url=ratings_url+idRating,json=rating_upt)
+
+    return "", response_ratings.status_code
