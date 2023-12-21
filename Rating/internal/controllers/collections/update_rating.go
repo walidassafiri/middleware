@@ -11,15 +11,15 @@ import (
 	"fmt"
 )
 
-// GetCollection
-// @Tags         collections
-// @Summary      Get a collection.
-// @Description  Get a collection.
+// UpdateRating
+// @Tags         UpdateRating
+// @Summary      Update a Rating.
+// @Description  Update a Rating.
 // @Param        id           	path      string  true  "Collection UUID formatted ID"
-// @Success      200            {object}  models.Collection
-// @Failure      422            "Cannot parse id"
+// @Success      200            {object}  models.Rating
+// @Body 		 json	UpdateRating	
 // @Failure      500            "Something went wrong"
-// @Router       /collections/{id} [get]
+// @Router       /collections/{id} [put]
 func UpdateRating(w http.ResponseWriter, r *http.Request) {
 	
 	ctx := r.Context()

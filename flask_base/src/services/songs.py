@@ -78,7 +78,7 @@ def addRatingSong(idSong,rating_add):
 
   #J'attend l' id rating get song pour pouvoir renvoyer l'objet  
 
-    return response_ratings.json(), 201
+    return response_ratings.json(), response_ratings.status_code
 
 def deleteRatingtoSong(idSong,idRating):
 
@@ -113,6 +113,7 @@ def setRatingtoSong(idSong,idRating,rating_upt):
         raise NotFound
     if  not isUserIdtoRatingValid(idRating):
         raise Forbidden
+
     response_ratings = requests.request(method="PUT", url=ratings_url+idRating,json=rating_upt)
 
     if response_ratings.status_code == 500:

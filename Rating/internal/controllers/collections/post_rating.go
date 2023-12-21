@@ -10,15 +10,14 @@ import (
 	"io/ioutil"
 )
 
-// GetCollection
-// @Tags         collections
-// @Summary      Get a collection.
-// @Description  Get a collection.
-// @Param        id           	path      string  true  "Collection UUID formatted ID"
-// @Success      200            {object}  models.Collection
-// @Failure      422            "Cannot parse id"
+// PostRating
+// @Tags         PostRating
+// @Summary      Post a Rating.
+// @Description  Post a Rating.
+// @Body 		 json	UpdateRating	 
+// @Success      200            {object}  models.Rating
 // @Failure      500            "Something went wrong"
-// @Router       /collections/{id} [get]
+// @Router       /ratings/ [post]
 func PostRating(w http.ResponseWriter, r *http.Request) {
 
 	reqBody, _ := ioutil.ReadAll(r.Body)
@@ -45,7 +44,7 @@ func PostRating(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
+	w.WriteHeader(http.StatusCreated)
 	body, _ := json.Marshal(collection)
 	_, _ = w.Write(body)
 	return

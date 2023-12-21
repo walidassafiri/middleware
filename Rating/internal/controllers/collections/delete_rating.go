@@ -14,9 +14,9 @@ import (
 // @Summary      Delete raiting.
 // @Description  Delete raiting by id.
 // @Param        id           	path      string  true  "Rating UUID formatted ID"
-// @Success      204            {object}  models.Rating
+// @Success      204            ""
 // @Failure      500            "Something went wrong"
-// @Router       /collections/{id} [delete]
+// @Router       /ratings/{id} [delete]
 func DeleteRating(w http.ResponseWriter, r *http.Request) {
 	
 	ctx := r.Context()
