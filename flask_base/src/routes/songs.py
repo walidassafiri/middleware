@@ -1,4 +1,6 @@
 import json
+import yaml
+
 from flask import Blueprint, request
 from flask_login import login_required
 from marshmallow import ValidationError
@@ -10,6 +12,15 @@ import src.services.songs as songs_service
 
 # from routes import users
 songs = Blueprint(name="songs", import_name=__name__)
+
+def isYaml(Accept,donnees):
+
+  if 'application/json' in Accept:
+    return donnees
+  elif 'application/yaml' in Accept:
+    return  yaml.dump(donnees)
+  else:
+    return donnees
 
 
 @songs.route('/<id>/ratings', methods=['GET'])
@@ -64,14 +75,18 @@ def get_ratingswithsong(id):
       tags:
           - ratings
     """
+    accept_header = request.headers.get('Accept')
     try:
-      return songs_service.getSongRatings(id)
+
+      reponse, status = songs_service.getSongRatings(id)
+
+      return isYaml(accept_header,reponse), status
     except (NotFound):
       error = NotFoundSchema().loads("{}")
-      return error, error.get("code")
+      return isYaml(accept_header,error), error.get("code")
     except (UnprocessableEntity):
       error = UnprocessableEntitySchema().loads("{}")
-      return error, error.get("code")
+      return isYaml(accept_header,error), error.get("code")
 
 
 @songs.route('/<id>/ratings', methods=['POST'])
@@ -135,23 +150,27 @@ def addRatingbySong(id):
           - Raiting
           - Song
     """
+    accept_header = request.headers.get('Accept')
     # parser le body
     try:
         rating_add = SongUpdateSchema().loads(json_data=request.data.decode('utf-8'))
     except ValidationError as e:
         error = UnprocessableEntitySchema().loads(json.dumps({"message": e.messages.__str__()}))
-        return error, error.get("code")
+        return isYaml(accept_header,error), error.get("code")
     try:
-      return songs_service.addRatingSong(id,rating_add)
+      reponse , status =songs_service.addRatingSong(id,rating_add)
+
+      return isYaml(accept_header,reponse),status
+
     except (NotFound):
       error = NotFoundSchema().loads("{}")
-      return error, error.get("code")
+      return isYaml(accept_header,error), error.get("code")
     except (SomethingWentWrong):
       error = SomethingWentWrongSchema().loads("{}")
-      return error, error.get("code")
+      return isYaml(accept_header,error) , error.get("code")
     except (UnprocessableEntity):
       error = UnprocessableEntitySchema().loads("{}")
-      return error, error.get("code")
+      return isYaml(accept_header,error), error.get("code")
 
 @songs.route('/<id>/ratings/<rating_id>', methods=['DELETE'])
 @login_required
@@ -208,18 +227,20 @@ def DeleteRatingtoSong(id,rating_id):
           - Raiting
           - Song
     """
+    accept_header = request.headers.get('Accept')
     # parser le body
     try:
-      return songs_service.deleteRatingtoSong(id,rating_id)
+      reponse, status =songs_service.deleteRatingtoSong(id,rating_id)
+      return isYaml(accept_header,reponse), status
     except (NotFound):
       error = NotFoundSchema().loads("{}")
-      return error, error.get("code")
+      return isYaml(accept_header,error), error.get("code")
     except (Forbidden):
       error = ForbiddenSchema().loads("{}")
-      return error, error.get("code")
+      return isYaml(accept_header,error), error.get("code")
     except (SomethingWentWrong):
       error = SomethingWentWrongSchema().loads("{}")
-      return error, error.get("code")
+      return isYaml(accept_header,error), error.get("code")
     
 
 @songs.route('/<id>/ratings/<rating_id>', methods=['GET'])
@@ -275,15 +296,17 @@ def GetRatingtoSong(id,rating_id):
           - Raiting
           - Song
     """
+    accept_header = request.headers.get('Accept')
     # parser le body
     try: 
-      return songs_service.getRatingtoSong(id,rating_id)
+      reponse , status=songs_service.getRatingtoSong(id,rating_id)
+      return isYaml(accept_header,reponse), status
     except (NotFound):
       error = NotFoundSchema().loads("{}")
-      return error, error.get("code")
+      return isYaml(accept_header,error) , error.get("code")
     except (UnprocessableEntity):
       error = UnprocessableEntitySchema().loads("{}")
-      return error, error.get("code")
+      return isYaml(accept_header,error) , error.get("code")
 
 @songs.route('/<id>/ratings/<rating_id>', methods=['PUT'])
 @login_required
@@ -357,24 +380,26 @@ def SetRatingtoSong(id,rating_id):
           - Raiting
           - Song
     """
+    accept_header = request.headers.get('Accept')
     # parser le body
     try:
       rating_upt = SongUpdateSchema().loads(json_data=request.data.decode('utf-8'))
     except ValidationError as e:
       error = UnprocessableEntitySchema().loads(json.dumps({"message": e.messages.__str__()}))
-      return error, error.get("code")
+      return isYaml(accept_header,error), error.get("code")
 
     try:
-      return songs_service.setRatingtoSong(id,rating_id,rating_upt)
+      reponse, status = songs_service.setRatingtoSong(id,rating_id,rating_upt)
+      return isYaml(accept_header,reponse), status
     except (NotFound):
       error = NotFoundSchema().loads("{}")
-      return error, error.get("code")
+      return isYaml(accept_header,error), error.get("code")
     except (Forbidden):
       error = ForbiddenSchema().loads("{}")
-      return error, error.get("code")
+      return isYaml(accept_header,error), error.get("code")
     except (SomethingWentWrong):
       error = SomethingWentWrongSchema().loads("{}")
-      return error, error.get("code")
+      return isYaml(accept_header,error), error.get("code")
     except (UnprocessableEntity):
       error = UnprocessableEntitySchema().loads("{}")
-      return error, error.get("code")
+      return isYaml(accept_header,error), error.get("code")
