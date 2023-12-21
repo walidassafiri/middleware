@@ -30,7 +30,7 @@ func PostRating(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	
-	err = collections.PostRating(post)
+	collection,err := collections.PostRating(post)
 	
 	if err != nil {
 		logrus.Errorf("error : %s", err.Error())
@@ -46,5 +46,7 @@ func PostRating(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
+	body, _ := json.Marshal(collection)
+	_, _ = w.Write(body)
 	return
 }

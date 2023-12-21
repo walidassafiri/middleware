@@ -44,17 +44,17 @@ func GetRatingById(id uuid.UUID) (*models.Rating, error) {
 
 	return collection, err
 }
-func PostRating(insert models.InsertRating) (error) {
-	err := repository.PostRating(insert)
+func PostRating(insert models.InsertRating) (*models.Rating ,error) {
+	collection,err := repository.PostRating(insert)
 	if err != nil {
 		logrus.Errorf("error while executing query : %s", err.Error())
-		return  &models.CustomError{
+		return  nil,&models.CustomError{
 			Message: "Something went wrong",
 			Code:    500,
 		}
 	}
 
-	return err
+	return collection,err
 }
 func DeleteRating(id uuid.UUID) (error) {
 	err := repository.DeleteRating(id)
@@ -74,21 +74,21 @@ func DeleteRating(id uuid.UUID) (error) {
 
 	return err
 }
-func UpdateRating(id uuid.UUID,upmodel models.UpdateRating) (error) {
-	err := repository.UpdateRating(id, upmodel)
+func UpdateRating(id uuid.UUID,upmodel models.UpdateRating) (*models.Rating ,error) {
+	collection,err := repository.UpdateRating(id, upmodel)
 	if err != nil {
 		if errors.As(err, &sql.ErrNoRows) {
-			return &models.CustomError{
+			return nil,&models.CustomError{
 				Message: "collection not found",
 				Code:    http.StatusNotFound,
 			}
 		}
 		logrus.Errorf("error retrieving collections : %s", err.Error())
-		return &models.CustomError{
+		return nil,&models.CustomError{
 			Message: "Something went wrong",
 			Code:    500,
 		}
 	}
 
-	return err
+	return collection,err
 }

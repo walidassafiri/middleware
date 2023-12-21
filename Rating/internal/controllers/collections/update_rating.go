@@ -34,7 +34,7 @@ func UpdateRating(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	
-	err = collections.UpdateRating(RatingId,upmodel)
+	collection,err := collections.UpdateRating(RatingId,upmodel)
 	
 	if err != nil {
 		logrus.Errorf("error : %s", err.Error())
@@ -50,5 +50,7 @@ func UpdateRating(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
+	body, _ := json.Marshal(collection)
+	_, _ = w.Write(body)
 	return
 }

@@ -48,22 +48,24 @@ func GetRatingById(id uuid.UUID) (*models.Rating, error) {
 	}
 	return &collection, err
 }
-func PostRating(insert models.InsertRating) (error) {
+func PostRating(insert models.InsertRating) (*models.Rating, error) {
 	db, err := helpers.OpenDB()
 	if err != nil {
-		return err
+		return nil,err
 	}
 	newUUID, err := uuid.NewV4()
 	if err != nil {
-		return err
+		return nil,err
 	}
-	_, err = db.Exec("INSERT INTO ratings(id,score,idUser,idSong,content)VALUES(?,?,?,?,?);",newUUID.String(), &insert.Score,&insert.IdUser,&insert.IdSong,&insert.Content)
+	var newidRating=newUUID
+	_, err = db.Exec("INSERT INTO ratings(id,score,idUser,idSong,content)VALUES(?,?,?,?,?);",newidRating.String(), &insert.Score,&insert.IdUser,&insert.IdSong,&insert.Content)
 	helpers.CloseDB(db)
 	if err != nil {
-        return err
+        return nil,err
     }
+	collection, _ :=GetRatingById(newidRating)
 
-	return err
+	return collection,err
 }
 func DeleteRating(id uuid.UUID) (error) {
 	db, err := helpers.OpenDB()
@@ -77,15 +79,18 @@ func DeleteRating(id uuid.UUID) (error) {
     }
 	return err
 }
-func UpdateRating(id uuid.UUID,upmodel models.UpdateRating) (error) {
+func UpdateRating(id uuid.UUID,upmodel models.UpdateRating) (*models.Rating, error) {
 	db, err := helpers.OpenDB()
 	if err != nil {
-		return err
+		return nil,err
 	}
 	_, err = db.Exec("UPDATE ratings SET score = ?,content =? WHERE id = ?;", &upmodel.Score,&upmodel.Content,id.String())
 	helpers.CloseDB(db)
 	if err != nil {
-        return err
+        return nil,err
     }
-	return err
+
+	collection, _ :=GetRatingById(id)
+
+	return collection,err
 }
