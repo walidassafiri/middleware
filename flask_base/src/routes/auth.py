@@ -206,4 +206,5 @@ def introspect():
           - auth
           - users
     """
+    print("id"+current_user.id)
     return users_service.get_user(current_user.id)

@@ -1,4 +1,4 @@
-import json
+import json,yaml
 from flask import Blueprint, request
 from flask_login import login_required
 from marshmallow import ValidationError
@@ -11,6 +11,14 @@ import src.services.users as users_service
 # from routes import users
 users = Blueprint(name="users", import_name=__name__)
 
+def isYaml(Accept,donnees):
+
+  if 'application/json' in Accept:
+    return donnees
+  elif 'application/yaml' in Accept:
+    return  yaml.dump_all(donnees)
+  else:
+    return donnees
 
 @users.route('/<id>', methods=['GET'])
 @login_required
@@ -51,7 +59,7 @@ def get_user(id):
       tags:
           - users
     """
-    return users_service.get_user(id)
+    return isYaml(request.headers.get('Accept'),users_service.get_user(id))
 @users.route('', methods=['GET'])
 @login_required
 def getAllUsers():
@@ -91,7 +99,8 @@ def getAllUsers():
       tags:
           - users
     """
-    return users_service.getAllUsers()
+
+    return isYaml(request.headers.get('Accept'),users_service.getAllUsers())
 
 @users.route('/<id>', methods=['PUT'])
 @login_required
@@ -147,6 +156,7 @@ def put_user(id):
     # parser le body
     try:
         user_update = UserUpdateSchema().loads(json_data=request.data.decode('utf-8'))
+        
     except ValidationError as e:
         error = UnprocessableEntitySchema().loads(json.dumps({"message": e.messages.__str__()}))
         return error, error.get("code")
@@ -205,4 +215,5 @@ def delete_user(id):
       tags:
           - users
     """
+    print("test")
     return users_service.delete_user(id)

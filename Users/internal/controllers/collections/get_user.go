@@ -25,14 +25,18 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 
 	collection, err := collections.GetUserById(collectionId)
 	if err != nil {
-		logrus.Errorf("error : %s", err.Error())
+		logrus.Errorf("error: %s", err.Error())
 		customError, isCustom := err.(*models.CustomError)
 		if isCustom {
+			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(customError.Code)
-			body, _ := json.Marshal(customError)
-			_, _ = w.Write(body)
+
+			if encodeErr := json.NewEncoder(w).Encode(customError); encodeErr != nil {
+				logrus.Errorf("error encoding custom error: %s", encodeErr.Error())
+				// Gérez l'erreur d'encodage ici si nécessaire
+			}
 		} else {
-			w.WriteHeader(http.StatusInternalServerError)
+			w.WriteHeader(http.StatusNotFound)
 		}
 		return
 	}

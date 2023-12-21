@@ -3,8 +3,8 @@ package models
 import "fmt"
 
 type CustomError struct {
-	Message string `default:""`
-	Code    int    `default:"200"`
+	Message string `json:"message"`
+	Code    int    `json:"code"`
 }
 
 func (e *CustomError) Error() string {

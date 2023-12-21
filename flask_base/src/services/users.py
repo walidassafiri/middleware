@@ -14,14 +14,15 @@ users_url = "http://localhost:8088/users/"  # URL de l'API users (golang)
 
 
 def get_user(id):
+
     response = requests.request(method="GET", url=users_url+id)
-    try:
-        
-        users_repository.get_user(id)
-    except Exception:
+    if response.status_code ==404:
         error = NotFoundSchema().loads("{}")
         return error, error.get("code")
+
+    users_repository.get_user(id)
     return response.json(), response.status_code
+
 def getAllUsers():
     response = requests.request(method="GET", url=users_url)
     
@@ -30,16 +31,16 @@ def getAllUsers():
 def create_user(user_register):
     # on récupère le modèle utilisateur pour la BDD
     user_model = UserModel.from_dict_with_clear_password(user_register)
-    print(user_model)
+    
     # on récupère le schéma utilisateur pour la requête vers l'API users
     user_schema = UserSchema().loads(json.dumps(user_register), unknown=EXCLUDE)
     
     # on crée l'utilisateur côté API users
     response = requests.request(method="POST", url=users_url, json=user_schema)
-    print(response.json()["id"] )
-    """if response.status_code != 201:
+    
+    if response.status_code != 201:
         return response.json(), response.status_code
-    """
+    
     # on ajoute l'utilisateur dans la base de données
     # pour que les données entre API et BDD correspondent
     try:
@@ -58,7 +59,7 @@ def modify_user(id, user_update):
 
     # s'il y a quelque chose à changer côté API (username, name)
     user_schema = UserSchema().loads(json.dumps(user_update), unknown=EXCLUDE)
-    print(user_schema)
+    
     response = None
     if not UserSchema.is_empty(user_schema):
         # on lance la requête de modification
@@ -72,17 +73,20 @@ def modify_user(id, user_update):
     if not user_model.is_empty():
         user_model.id = id
         found_user = users_repository.get_user_from_id(id)
+        
         if not user_model.username:
             user_model.username = found_user.username
         if not user_model.encrypted_password:
             user_model.encrypted_password = found_user.encrypted_password
         try:
+            
             users_repository.update_user(user_model)
+            
         except exc.IntegrityError as e:
             if "NOT NULL" in e.orig.args[0]:
                 raise UnprocessableEntity
             raise Conflict
-
+    
     return (response.json(), response.status_code) if response else get_user(id)
 
 
@@ -108,7 +112,7 @@ def delete_user(id):
             'status': 'success',
             'message': f'Resource avec ID {id} supprimée avec succès.'
         }
-    return jsonify(response), 200
+    return jsonify(response), 204
 
 
 

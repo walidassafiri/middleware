@@ -4,27 +4,24 @@ import (
 	"github.com/gofrs/uuid"
 )
 
-type Collection struct {
-	Id      *uuid.UUID `json:"id"`
-	Content string     `json:"content"`
-}
 type UserPublic struct {
-	Id   *uuid.UUID `json:"id"`
-	Name string     `json:"name"`
-	Mail string     `json:"mail"`
+	Id       *uuid.UUID `json:"id"`
+	Name     string     `json:"name"`
+	Username string     `json:"username"`
 }
 type User struct {
 	Id       *uuid.UUID `json:"id"`
 	Name     string     `json:"name"`
-	Mail     string     `json:"mail"`
-	Password string     `json:"password"`
+	Username string     `json:"username"`
 }
 
 type InsertUser struct {
 	Name     string `json:"name"`
-	Mail     string `json:"mail"`
-	Password string `json:"password"`
+	Username string `json:"username"`
 }
 type UserId struct {
 	Id string `json:"id"`
+}
+type UserName struct {
+	Username string `json:"username"`
 }

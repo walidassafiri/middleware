@@ -13,7 +13,7 @@ func GetAllUsers() ([]models.UserPublic, error) {
 	if err != nil {
 		return nil, err
 	}
-	rows, err := db.Query("SELECT id, name, mail FROM users")
+	rows, err := db.Query("SELECT id, name, username FROM users")
 	helpers.CloseDB(db)
 	if err != nil {
 		return nil, err
@@ -23,7 +23,7 @@ func GetAllUsers() ([]models.UserPublic, error) {
 	collections := []models.UserPublic{}
 	for rows.Next() {
 		var data models.UserPublic
-		err = rows.Scan(&data.Id, &data.Name, &data.Mail)
+		err = rows.Scan(&data.Id, &data.Name, &data.Username)
 		if err != nil {
 			return nil, err
 		}
@@ -40,24 +40,24 @@ func GetUserById(id uuid.UUID) (*models.UserPublic, error) {
 	if err != nil {
 		return nil, err
 	}
-	row := db.QueryRow("SELECT id, name, mail FROM users WHERE id=?", id.String())
+	row := db.QueryRow("SELECT id, name, username FROM users WHERE id=?", id.String())
 	helpers.CloseDB(db)
 
 	var collection models.UserPublic
-	err = row.Scan(&collection.Id, &collection.Name, &collection.Mail)
+	err = row.Scan(&collection.Id, &collection.Name, &collection.Username)
 	if err != nil {
 		return nil, err
 	}
 	return &collection, err
 }
-func SetUser(name string, mail string, password string) (string, error) {
+func SetUser(name string, username string) (string, error) {
 	db, err := helpers.OpenDB()
 	if err != nil {
 		return "", err
 	}
 	uuid, err := uuid.NewV4()
 
-	result, err := db.Exec("INSERT INTO users (id, name, mail, password) VALUES (?, ?, ?, ?)", uuid.String(), name, mail, password)
+	result, err := db.Exec("INSERT INTO users (id, name, username) VALUES (?, ?, ?)", uuid.String(), name, username)
 	if err != nil {
 		fmt.Println("Erreur lors de l'insertion dans la base de données:", err)
 		return "", err
@@ -67,11 +67,6 @@ func SetUser(name string, mail string, password string) (string, error) {
 	fmt.Println("Nombre de lignes affectées:", rowsAffected)
 	helpers.CloseDB(db)
 
-	/*var collection models.User
-	err = row.Scan(&collection.Id, &collection.Name, &collection.Mail)
-	if err != nil {
-		return err
-	}*/
 	return uuid.String(), err
 }
 func DeleteUserById(userId uuid.UUID) error {
@@ -89,13 +84,13 @@ func DeleteUserById(userId uuid.UUID) error {
 
 	return err
 }
-func UpdateUser(userId uuid.UUID, name string, mail string, password string) error {
+func UpdateUser(userId uuid.UUID, name string, username string) error {
 	db, err := helpers.OpenDB()
 	if err != nil {
 		return err
 	}
 
-	_, err = db.Exec("UPDATE users SET name=? , mail=?, password=? WHERE id=?", name, mail, password, userId)
+	_, err = db.Exec("UPDATE users SET name=? , username=? WHERE id=?", name, username, userId)
 	if err != nil {
 		fmt.Println("Erreur lors de la suppression dans la base de données:", err)
 	}

@@ -2,7 +2,6 @@ package collections
 
 import (
 	"database/sql"
-	"errors"
 	"middleware/example/internal/models"
 	repository "middleware/example/internal/repositories/collections"
 	"net/http"
@@ -30,9 +29,9 @@ func GetAllUsers() ([]models.UserPublic, error) {
 func GetUserById(id uuid.UUID) (*models.UserPublic, error) {
 	collection, err := repository.GetUserById(id)
 	if err != nil {
-		if errors.As(err, &sql.ErrNoRows) {
+		if err.Error() == sql.ErrNoRows.Error() {
 			return nil, &models.CustomError{
-				Message: " not found",
+				Message: "user not found",
 				Code:    http.StatusNotFound,
 			}
 		}
@@ -45,13 +44,13 @@ func GetUserById(id uuid.UUID) (*models.UserPublic, error) {
 
 	return collection, err
 }
-func SetUser(name string, mail string, password string) (string, error) {
+func SetUser(name string, username string) (string, error) {
 	//var err error
-	uuid, err := repository.SetUser(name, mail, password)
+	uuid, err := repository.SetUser(name, username)
 	if err != nil {
-		if errors.As(err, &sql.ErrNoRows) {
+		if err.Error() == sql.ErrNoRows.Error() {
 			return "", &models.CustomError{
-				Message: " not found",
+				Message: "user not found",
 				Code:    http.StatusNotFound,
 			}
 		}
@@ -69,9 +68,9 @@ func SetUser(name string, mail string, password string) (string, error) {
 func DeleteUserById(id uuid.UUID) error {
 	err := repository.DeleteUserById(id)
 	if err != nil {
-		if errors.As(err, &sql.ErrNoRows) {
+		if err.Error() == sql.ErrNoRows.Error() {
 			return &models.CustomError{
-				Message: " not found",
+				Message: "user not found",
 				Code:    http.StatusNotFound,
 			}
 		}
@@ -83,12 +82,12 @@ func DeleteUserById(id uuid.UUID) error {
 	}
 	return err
 }
-func UpdateUser(id uuid.UUID, name string, mail string, password string) error {
-	err := repository.UpdateUser(id, name, mail, password)
+func UpdateUser(id uuid.UUID, name string, username string) error {
+	err := repository.UpdateUser(id, name, username)
 	if err != nil {
-		if errors.As(err, &sql.ErrNoRows) {
+		if err.Error() == sql.ErrNoRows.Error() {
 			return &models.CustomError{
-				Message: " not found",
+				Message: "user not found",
 				Code:    http.StatusNotFound,
 			}
 		}
