@@ -158,6 +158,7 @@ def addRatingbySong(id):
         error = UnprocessableEntitySchema().loads(json.dumps({"message": e.messages.__str__()}))
         return isYaml(accept_header,error), error.get("code")
     try:
+
       reponse , status =songs_service.addRatingSong(id,rating_add)
 
       return isYaml(accept_header,reponse),status
@@ -230,7 +231,9 @@ def DeleteRatingtoSong(id,rating_id):
     accept_header = request.headers.get('Accept')
     # parser le body
     try:
+
       reponse, status =songs_service.deleteRatingtoSong(id,rating_id)
+
       return isYaml(accept_header,reponse), status
     except (NotFound):
       error = NotFoundSchema().loads("{}")
@@ -299,7 +302,9 @@ def GetRatingtoSong(id,rating_id):
     accept_header = request.headers.get('Accept')
     # parser le body
     try: 
+
       reponse , status=songs_service.getRatingtoSong(id,rating_id)
+
       return isYaml(accept_header,reponse), status
     except (NotFound):
       error = NotFoundSchema().loads("{}")
@@ -389,7 +394,9 @@ def SetRatingtoSong(id,rating_id):
       return isYaml(accept_header,error), error.get("code")
 
     try:
+
       reponse, status = songs_service.setRatingtoSong(id,rating_id,rating_upt)
+      
       return isYaml(accept_header,reponse), status
     except (NotFound):
       error = NotFoundSchema().loads("{}")
