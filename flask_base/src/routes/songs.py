@@ -30,47 +30,49 @@ def get_ratingswithsong(id):
         '200':
           description: Ok
           content:
-           application/json:
+            application/json:
               schema:
                 type: array
-                  items:
-                    $ref: "#/components/schemas/UpdateRatingSchema"
+                items:
+                  $ref: "#/components/schemas/UpdateRatingSchema"
             application/yaml:
               schema:
                 type: array
-                  items:
-                    $ref: "#/components/schemas/UpdateRatingSchema"
+                items:
+                  $ref: "#/components/schemas/UpdateRatingSchema"
         '401':
           description: Unauthorized
           content:
             application/json:
-              schema: Unauthorized
+              schema: UnauthorizedSchema
             application/yaml:
-              schema: Unauthorized
+              schema: UnauthorizedSchema
         '404':
           description: Not found
           content:
             application/json:
-              schema: NotFound
+              schema: NotFoundSchema
             application/yaml:
-              schema: NotFound
+              schema: NotFoundSchema
         '422':
           description: Unprocessable entity
           content:
             application/json:
-              schema: Unprocessable entity
+              schema: UnprocessableEntitySchema
             application/yaml:
-              schema: Unprocessable entity
+              schema: UnprocessableEntitySchema
       tags:
           - ratings
     """
     try:
       return songs_service.getSongRatings(id)
     except (NotFound):
-      error = UnauthorizedSchema().loads("{}")
+      error = NotFoundSchema().loads("{}")
+      return error, error.get("code")
+    except (UnprocessableEntity):
+      error = UnprocessableEntitySchema().loads("{}")
       return error, error.get("code")
 
-    
 
 @songs.route('/<id>/ratings', methods=['POST'])
 @login_required
@@ -90,45 +92,45 @@ def addRatingbySong(id):
         required: true
         content:
             application/json:
-              schema: 
+              schema: SongUpdateSchema
             application/yaml:
-              schema: 
+              schema: SongUpdateSchema
       responses:
         '201':
           description: Created
           content:
             application/json:
-              schema: Created
+              schema: UpdateRatingSchema
             application/yaml:
-              schema: Created
+              schema: UpdateRatingSchema
         '401':
           description: Unauthorized
           content:
             application/json:
-              schema: Unauthorized
+              schema: UnauthorizedSchema
             application/yaml:
-              schema: Unauthorized
+              schema: UnauthorizedSchema
         '404':
           description: Not found
           content:
             application/json:
-              schema: NotFound
+              schema: NotFoundSchema
             application/yaml:
-              schema: NotFound
+              schema: NotFoundSchema
         '422':
           description: Unprocessable entity
           content:
             application/json:
-              schema: UnprocessableEntity
+              schema: UnprocessableEntitySchema
             application/yaml:
-              schema: UnprocessableEntity
+              schema: UnprocessableEntitySchema
         '500':
           description: Something went wrong
           content:
             application/json:
-              schema: SomethingWentWrong
+              schema: SomethingWentWrongSchema
             application/yaml:
-              schema: SomethingWentWrong
+              schema: SomethingWentWrongSchema
       tags:
           - Raiting
           - Song
@@ -142,7 +144,13 @@ def addRatingbySong(id):
     try:
       return songs_service.addRatingSong(id,rating_add)
     except (NotFound):
-      error = UnauthorizedSchema().loads("{}")
+      error = NotFoundSchema().loads("{}")
+      return error, error.get("code")
+    except (SomethingWentWrong):
+      error = SomethingWentWrongSchema().loads("{}")
+      return error, error.get("code")
+    except (UnprocessableEntity):
+      error = UnprocessableEntitySchema().loads("{}")
       return error, error.get("code")
 
 @songs.route('/<id>/ratings/<rating_id>', methods=['DELETE'])
@@ -165,13 +173,6 @@ def DeleteRatingtoSong(id,rating_id):
             type: uuidv4
           required: true
           description: UUID of Rating id
-      requestBody:
-        required: true
-        content:
-            application/json:
-                schema: 
-            application/yaml:
-                schema: 
       responses:
         '204':
           description: No content
@@ -179,23 +180,30 @@ def DeleteRatingtoSong(id,rating_id):
           description: Unauthorized
           content:
             application/json:
-              schema: Unauthorized
+              schema: UnauthorizedSchema
             application/yaml:
-              schema: Unauthorized
+              schema: UnauthorizedSchema
         '403':
           description: Forbidden, rating not theirs
           content:
             application/json:
-              schema: Forbidden
+              schema: ForbiddenSchema
             application/yaml:
-              schema: Forbidden
+              schema: ForbiddenSchema
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema: NotFoundSchema
+            application/yaml:
+              schema: NotFoundSchema
         '500':
           description: Something went wrong
           content:
             application/json:
-              schema: SomethingWentWrong
+              schema: SomethingWentWrongSchema
             application/yaml:
-              schema: SomethingWentWrong
+              schema: SomethingWentWrongSchema
       tags:
           - Raiting
           - Song
@@ -204,8 +212,15 @@ def DeleteRatingtoSong(id,rating_id):
     try:
       return songs_service.deleteRatingtoSong(id,rating_id)
     except (NotFound):
-      error = UnauthorizedSchema().loads("{}")
+      error = NotFoundSchema().loads("{}")
       return error, error.get("code")
+    except (Forbidden):
+      error = ForbiddenSchema().loads("{}")
+      return error, error.get("code")
+    except (SomethingWentWrong):
+      error = SomethingWentWrongSchema().loads("{}")
+      return error, error.get("code")
+    
 
 @songs.route('/<id>/ratings/<rating_id>', methods=['GET'])
 @login_required
@@ -213,7 +228,7 @@ def GetRatingtoSong(id,rating_id):
     """
     ---
     post:
-      description: Register rating
+      description: get rating
       parameters:
       - in: path
         name: id
@@ -227,49 +242,47 @@ def GetRatingtoSong(id,rating_id):
           type: uuidv4
         required: true
         description: UUID of Rating id
-      requestBody:
-        required: true
-        content:
-            application/json:
-                schema: UpdateRatingSchema
       responses:
         '200':
           description: Ok
           content:
             application/json:
-              schema: User
+              schema: UpdateRatingSchema
             application/yaml:
-              schema: User
+              schema: UpdateRatingSchema
         '401':
           description: Unauthorized
           content:
             application/json:
-              schema: Unauthorized
+              schema: UnauthorizedSchema
             application/yaml:
-              schema: Unauthorized
+              schema: UnauthorizedSchema
         '404':
           description: Not found
           content:
             application/json:
-              schema: Notfound
+              schema: NotFoundSchema
             application/yaml:
-              schema: Notfound
+              schema: NotFoundSchema
         '422':
           description: Unprocessable entity
           content:
             application/json:
-              schema: UnprocessableEntity
+              schema: UnprocessableEntitySchema
             application/yaml:
-              schema: UnprocessableEntity
+              schema: UnprocessableEntitySchema
       tags:
           - Raiting
           - Song
     """
     # parser le body
-    try:
+    try: 
       return songs_service.getRatingtoSong(id,rating_id)
     except (NotFound):
-      error = UnauthorizedSchema().loads("{}")
+      error = NotFoundSchema().loads("{}")
+      return error, error.get("code")
+    except (UnprocessableEntity):
+      error = UnprocessableEntitySchema().loads("{}")
       return error, error.get("code")
 
 @songs.route('/<id>/ratings/<rating_id>', methods=['PUT'])
@@ -302,47 +315,47 @@ def SetRatingtoSong(id,rating_id):
           description: Ok
           content:
             application/json:
-              schema:
+              schema: UpdateRatingSchema
             application/yaml:
-              schema: 
+              schema: UpdateRatingSchema
         '401':
           description: Unauthorized
           content:
             application/json:
-              schema: Unauthorized
+              schema: UnauthorizedSchema
             application/yaml:
-              schema: Unauthorized
+              schema: UnauthorizedSchema
         '403':
           description: Already logged in
           content:
             application/json:
-              schema: Forbidden
+              schema: ForbiddenSchema
             application/yaml:
-              schema: Forbidden
+              schema: ForbiddenSchema
         '404':
           description: Not found
           content:
             application/json:
-              schema: Notfound
+              schema: NotFoundSchema
             application/yaml:
-              schema: Notfound
+              schema: NotFoundSchema
         '422':
           description: Unprocessable entity
           content:
             application/json:
-              schema: UnprocessableEntity
+              schema: UnprocessableEntitySchema
             application/yaml:
-              schema: UnprocessableEntity
+              schema: UnprocessableEntitySchema
         '500':
           description: Something went wrong
           content:
             application/json:
-              schema: SomethingWentWrong
+              schema: SomethingWentWrongSchema
             application/yaml:
-              schema: SomethingWentWrong
+              schema: SomethingWentWrongSchema
       tags:
-          - auth
-          - users
+          - Raiting
+          - Song
     """
     # parser le body
     try:
@@ -354,5 +367,14 @@ def SetRatingtoSong(id,rating_id):
     try:
       return songs_service.setRatingtoSong(id,rating_id,rating_upt)
     except (NotFound):
-      error = UnauthorizedSchema().loads("{}")
+      error = NotFoundSchema().loads("{}")
+      return error, error.get("code")
+    except (Forbidden):
+      error = ForbiddenSchema().loads("{}")
+      return error, error.get("code")
+    except (SomethingWentWrong):
+      error = SomethingWentWrongSchema().loads("{}")
+      return error, error.get("code")
+    except (UnprocessableEntity):
+      error = UnprocessableEntitySchema().loads("{}")
       return error, error.get("code")
