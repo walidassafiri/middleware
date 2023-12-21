@@ -15,7 +15,7 @@ from src.schemas.errors import *
 songs_url = "http://localhost:8092/songs/"  # URL de l'API users (golang)
 ratings_url = "http://localhost:8089/ratings/"
 
-def getAllRatingsbyIdSong(idSong):
+def getSongRatings(idSong):
 
     if not isSongIdValid(idSong):
         raise NotFound
@@ -48,7 +48,7 @@ def isUserIdtoRatingValid(idRating):
     else:
         return False
 
-def addRatingbySong(idSong,rating_add):
+def addRatingSong(idSong,rating_add):
 
     if not isSongIdValid(idSong):
         raise NotFound
