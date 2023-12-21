@@ -15,7 +15,7 @@ import (
 // @Summary      Post a Rating.
 // @Description  Post a Rating.
 // @Body 		 json	UpdateRating	 
-// @Success      200            {object}  models.Rating
+// @Success      201            {object}  models.Rating
 // @Failure      500            "Something went wrong"
 // @Router       /ratings/ [post]
 func PostRating(w http.ResponseWriter, r *http.Request) {
