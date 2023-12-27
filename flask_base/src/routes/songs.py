@@ -10,8 +10,11 @@ from src.schemas.song import *
 from src.schemas.errors import *
 import src.services.songs as songs_service
 
-# from routes import users
+
+# from routes import songs
 songs = Blueprint(name="songs", import_name=__name__)
+
+
 
 def isYaml(Accept,donnees):
 
@@ -79,6 +82,72 @@ def get_ratingswithsong(id):
     try:
 
       reponse, status = songs_service.getSongRatings(id)
+
+      return isYaml(accept_header,reponse), status
+    except (NotFound):
+      error = NotFoundSchema().loads("{}")
+      return isYaml(accept_header,error), error.get("code")
+    except (UnprocessableEntity):
+      error = UnprocessableEntitySchema().loads("{}")
+      return isYaml(accept_header,error), error.get("code")
+
+
+
+
+@songs.route('/<id>', methods=['GET'])
+def get_song(id):
+    """
+    ---
+    get:
+      description: Getting a song
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: uuidv4
+          required: true
+          description: UUID of song id
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/GetSong"
+            application/yaml:
+              schema: 
+                 type: array
+                 items:
+                  $ref: "#/components/schemas/GetSong"
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema: Unauthorized
+            application/yaml:
+              schema: Unauthorized
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema: NotFound
+            application/yaml:
+              schema: NotFound
+        '422':
+          description: Unprocessable entity
+          content:
+            application/json:
+              schema: UnprocessableEntitySchema
+            application/yaml:
+              schema: UnprocessableEntitySchema
+      tags:
+          - songs
+    """
+    accept_header = request.headers.get('Accept')
+    try:
+      reponse, status = songs_service.get_song(id)
 
       return isYaml(accept_header,reponse), status
     except (NotFound):
@@ -172,6 +241,7 @@ def addRatingbySong(id):
     except (UnprocessableEntity):
       error = UnprocessableEntitySchema().loads("{}")
       return isYaml(accept_header,error), error.get("code")
+
 
 @songs.route('/<id>/ratings/<rating_id>', methods=['DELETE'])
 @login_required
@@ -410,3 +480,245 @@ def SetRatingtoSong(id,rating_id):
     except (UnprocessableEntity):
       error = UnprocessableEntitySchema().loads("{}")
       return isYaml(accept_header,error), error.get("code")
+
+
+
+@songs.route('', methods=['GET'])
+def getAllSongs():
+    """
+    ---
+    get:
+      description: All song
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: uuidv4
+          required: true
+
+          description: UUID of song id
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema: song
+            application/yaml:
+              schema: song
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema: Unauthorized
+            application/yaml:
+              schema: Unauthorized
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema: NotFound
+            application/yaml:
+              schema: NotFound
+      tags:
+          - songs
+    """
+    return songs_service.get_songs()
+
+
+
+@songs.route('/<id>', methods=['PUT'])
+def update_song(id):
+    """
+    ---
+    put:
+      description: Updating a song
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: uuidv4
+          required: true
+          description: UUID of song id
+      requestBody:
+        required: true
+        content:
+            application/json:
+                schema: UpdateSong
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema: Song
+            application/yaml:
+              schema: Song
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema: Unauthorized
+            application/yaml:
+              schema: Unauthorized
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema: NotFound
+            application/yaml:
+              schema: NotFound
+        '422':
+          description: Unprocessable entity
+          content:
+            application/json:
+              schema: UnprocessableEntity
+            application/yaml:
+              schema: UnprocessableEntity
+      tags:
+          - songs
+    """
+    accept_header = request.headers.get('Accept')
+
+    # parser le body
+    try:
+      song_data = UpdateSongSchema().loads(json_data=request.data.decode('utf-8'))
+    except ValidationError as e:
+      error = UnprocessableEntitySchema().loads(json.dumps({"message": e.messages.__str__()}))
+      return isYaml(accept_header,error), error.get("code")
+
+    try:
+
+      reponse, status = songs_service.update_song(id, song_data)
+      
+      return isYaml(accept_header,reponse), status
+    except (NotFound):
+      error = NotFoundSchema().loads("{}")
+      return isYaml(accept_header,error), error.get("code")
+    except (Forbidden):
+      error = ForbiddenSchema().loads("{}")
+      return isYaml(accept_header,error), error.get("code")
+    except (SomethingWentWrong):
+      error = SomethingWentWrongSchema().loads("{}")
+      return isYaml(accept_header,error), error.get("code")
+    except (UnprocessableEntity):
+      error = UnprocessableEntitySchema().loads("{}")
+      return isYaml(accept_header,error), error.get("code")
+
+
+
+
+
+@songs.route('/<id>', methods=['DELETE'])
+def delete_song(id):
+    """
+    ---
+    delete:
+      description: Supprimer une chanson
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: uuidv4
+          required: true
+          description: UUID de l'identifiant de la chanson
+      requestBody:
+        required: true
+        content:
+            application/json:
+                schema: DeleteSong  # Utilisez le schéma de suppression
+      responses:
+        '204':
+          description: Pas de contenu
+        '401':
+          description: Non autorisé
+          content:
+            application/json:
+              schema: Unauthorized
+            application/yaml:
+              schema: Unauthorized
+        '404':
+          description: Non trouvé
+          content:
+            application/json:
+              schema: NotFound
+            application/yaml:
+              schema: NotFound
+      tags:
+          - songs
+    """
+    accept_header = request.headers.get('Accept')
+    try:
+
+      reponse, status = songs_service.delete_song(id)
+
+      return isYaml(accept_header,reponse), status
+    except (NotFound):
+      error = NotFoundSchema().loads("{}")
+      return isYaml(accept_header,error), error.get("code")
+    except (UnprocessableEntity):
+      error = UnprocessableEntitySchema().loads("{}")
+      return isYaml(accept_header,error), error.get("code")
+
+
+
+
+
+
+
+
+@songs.route('', methods=['POST'])
+def create_song():
+    """
+    ---
+    post:
+      description: Créer une nouvelle chanson
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: uuidv4
+          required: true
+          description: UUID of Song id
+      requestBody:
+        required: true
+        content:
+            application/json:
+                schema: CreateSong  # Utilisez le schéma de création
+      responses:
+        '201':
+          description: Créé
+          content:
+            application/json:
+              schema: Song
+            application/yaml:
+              schema: Song
+        '401':
+          description: Non autorisé
+          content:
+            application/json:
+              schema: Unauthorized
+            application/yaml:
+              schema: Unauthorized
+        '422':
+          description: Entité non traitable
+          content:
+            application/json:
+              schema: UnprocessableEntity
+            application/yaml:
+              schema: UnprocessableEntity
+      tags:
+          - songs
+    """
+    try:
+        song_data = CreateSongSchema().loads(json_data=request.data.decode('utf-8'))
+    except ValidationError as e:
+        error = UnprocessableEntitySchema().loads(json.dumps({"message": e.messages.__str__()}))
+        return error, error.get("code")
+
+    try:
+        return songs_service.create_song(song_data)
+    except UnprocessableEntity:
+        error = UnprocessableEntitySchema().loads(json.dumps({"message": "Un ou plusieurs champs requis sont vides"}))
+        return error, error.get("code")
+    except Exception:
+        error = SomethingWentWrongSchema().loads("{}")
+        return error, error.get("code")
