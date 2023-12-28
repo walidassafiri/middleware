@@ -49,10 +49,6 @@ class BaseSongSchema(Schema):
 
 # Schéma pour la création d'une chanson
 class CreateSongSchema(SongSchema):
-    """
-    Schema for validating and deserializing data when creating a new Song.
-    """
-
     artist = fields.String(required=True, validate=validate.Length(max=255))
     title = fields.String(required=True, validate=validate.Length(max=255))
     album = fields.String(required=True, validate=validate.Length(max=255))
@@ -71,17 +67,9 @@ class UpdateSongSchema(SongSchema):
 
 
 class GetSongSchema(SongSchema):
-    """
-    Schema for validating parameters when retrieving a specific Song.
-    """
-
     id = fields.UUID(required=True)
 
 
 
 class DeleteSongSchema(SongSchema):
-    """
-    Schema for validating deletion of a Song.
-    """
-
     id = fields.UUID(required=True)

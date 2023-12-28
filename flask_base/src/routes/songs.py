@@ -95,6 +95,7 @@ def get_ratingswithsong(id):
 
 
 @songs.route('/<id>', methods=['GET'])
+@login_required
 def get_song(id):
     """
     ---
@@ -484,6 +485,7 @@ def SetRatingtoSong(id,rating_id):
 
 
 @songs.route('', methods=['GET'])
+@login_required
 def getAllSongs():
     """
     ---
@@ -527,6 +529,7 @@ def getAllSongs():
 
 
 @songs.route('/<id>', methods=['PUT'])
+@login_required
 def update_song(id):
     """
     ---
@@ -608,6 +611,7 @@ def update_song(id):
 
 
 @songs.route('/<id>', methods=['DELETE'])
+@login_required
 def delete_song(id):
     """
     ---
@@ -662,10 +666,8 @@ def delete_song(id):
 
 
 
-
-
-
 @songs.route('', methods=['POST'])
+@login_required
 def create_song():
     """
     ---
