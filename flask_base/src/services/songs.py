@@ -64,7 +64,7 @@ def get_songs():
 
 
 def delete_song(id):
-    requests.request(method="DELETE", url=songs_url + id)
+    response=requests.request(method="DELETE", url=songs_url + id)
 
     try:
         songs_repository.delete_song(id)
@@ -72,8 +72,4 @@ def delete_song(id):
         error = NotFoundSchema().loads("{}")
         return error, error.get("code")
 
-    response = {
-        'status': 'success',
-        'message': f'Resource avec ID {id} supprimée avec succès.'
-    }
-    return response, 200
+    return response.json(), 200

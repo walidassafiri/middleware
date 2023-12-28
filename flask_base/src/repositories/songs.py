@@ -14,25 +14,18 @@ def get_song(song_id):
 
 
 def create_song(song_model):
-    """
-    Ajoute une nouvelle chanson à la base de données.
-    """
     db.session.add(song_model)
     try:
         # Tentative de commit des changements
         db.session.commit()
-        print("Chanson ajoutée avec succès à la base de données.")
     except Exception as e:
         # En cas d'erreur, annuler les modifications
         db.session.rollback()
-        print(f"Erreur lors de l'ajout de la chanson : {e}")
+
 
 
 
 def update_song(updated_song_model):
-    """
-    Met à jour une chanson dans la base de données.
-    """
     song = get_song_from_id(updated_song_model.id)
     if song:
         song.artist = updated_song_model.artist
