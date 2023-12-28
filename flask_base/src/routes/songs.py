@@ -95,7 +95,7 @@ def get_ratingswithsong(id):
 
 
 @songs.route('/<id>', methods=['GET'])
-@login_required
+##@login_required
 def get_song(id):
     """
     ---
@@ -485,7 +485,7 @@ def SetRatingtoSong(id,rating_id):
 
 
 @songs.route('', methods=['GET'])
-@login_required
+##@login_required
 def getAllSongs():
     """
     ---
@@ -504,9 +504,15 @@ def getAllSongs():
           description: Ok
           content:
             application/json:
-              schema: song
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/UpdateRatingSchema"
             application/yaml:
-              schema: song
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/UpdateRatingSchema"
         '401':
           description: Unauthorized
           content:
@@ -521,15 +527,33 @@ def getAllSongs():
               schema: NotFound
             application/yaml:
               schema: NotFound
+        '422':
+          description: Unprocessable entity
+          content:
+            application/json:
+              schema: UnprocessableEntitySchema
+            application/yaml:
+              schema: UnprocessableEntitySchema
       tags:
           - songs
     """
-    return songs_service.get_songs()
+    accept_header = request.headers.get('Accept')
+    try:
+
+      reponse, status = songs_service.get_songs()
+
+      return isYaml(accept_header,reponse), status
+    except (NotFound):
+      error = NotFoundSchema().loads("{}")
+      return isYaml(accept_header,error), error.get("code")
+    except (UnprocessableEntity):
+      error = UnprocessableEntitySchema().loads("{}")
+      return isYaml(accept_header,error), error.get("code")
 
 
 
 @songs.route('/<id>', methods=['PUT'])
-@login_required
+##@login_required
 def update_song(id):
     """
     ---
@@ -562,6 +586,13 @@ def update_song(id):
               schema: Unauthorized
             application/yaml:
               schema: Unauthorized
+        '403':
+          description: Already logged in
+          content:
+            application/json:
+              schema: ForbiddenSchema
+            application/yaml:
+              schema: ForbiddenSchema
         '404':
           description: Not found
           content:
@@ -576,6 +607,13 @@ def update_song(id):
               schema: UnprocessableEntity
             application/yaml:
               schema: UnprocessableEntity
+        '500':
+          description: Something went wrong
+          content:
+            application/json:
+              schema: SomethingWentWrongSchema
+            application/yaml:
+              schema: SomethingWentWrongSchema
       tags:
           - songs
     """
@@ -611,7 +649,7 @@ def update_song(id):
 
 
 @songs.route('/<id>', methods=['DELETE'])
-@login_required
+##@login_required
 def delete_song(id):
     """
     ---
@@ -639,6 +677,13 @@ def delete_song(id):
               schema: Unauthorized
             application/yaml:
               schema: Unauthorized
+        '403':
+          description: Forbidden, rating not theirs
+          content:
+            application/json:
+              schema: ForbiddenSchema
+            application/yaml:
+              schema: ForbiddenSchema
         '404':
           description: Non trouvé
           content:
@@ -646,6 +691,13 @@ def delete_song(id):
               schema: NotFound
             application/yaml:
               schema: NotFound
+        '500':
+          description: Something went wrong
+          content:
+            application/json:
+              schema: SomethingWentWrongSchema
+            application/yaml:
+              schema: SomethingWentWrongSchema
       tags:
           - songs
     """
@@ -658,8 +710,11 @@ def delete_song(id):
     except (NotFound):
       error = NotFoundSchema().loads("{}")
       return isYaml(accept_header,error), error.get("code")
-    except (UnprocessableEntity):
-      error = UnprocessableEntitySchema().loads("{}")
+    except (Forbidden):
+      error = ForbiddenSchema().loads("{}")
+      return isYaml(accept_header,error), error.get("code")
+    except (SomethingWentWrong):
+      error = SomethingWentWrongSchema().loads("{}")
       return isYaml(accept_header,error), error.get("code")
 
 
@@ -667,7 +722,7 @@ def delete_song(id):
 
 
 @songs.route('', methods=['POST'])
-@login_required
+##@login_required
 def create_song():
     """
     ---
@@ -684,7 +739,9 @@ def create_song():
         required: true
         content:
             application/json:
-                schema: CreateSong  # Utilisez le schéma de création
+                schema: CreateSong  
+            application/yaml:
+                schema: CreateSong
       responses:
         '201':
           description: Créé
@@ -700,6 +757,13 @@ def create_song():
               schema: Unauthorized
             application/yaml:
               schema: Unauthorized
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema: NotFoundSchema
+            application/yaml:
+              schema: NotFoundSchema
         '422':
           description: Entité non traitable
           content:
@@ -707,6 +771,13 @@ def create_song():
               schema: UnprocessableEntity
             application/yaml:
               schema: UnprocessableEntity
+        '500':
+          description: Something went wrong
+          content:
+            application/json:
+              schema: SomethingWentWrongSchema
+            application/yaml:
+              schema: SomethingWentWrongSchema
       tags:
           - songs
     """
