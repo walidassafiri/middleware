@@ -95,7 +95,7 @@ def get_ratingswithsong(id):
 
 
 @songs.route('/<id>', methods=['GET'])
-##@login_required
+@login_required
 def get_song(id):
     """
     ---
@@ -485,7 +485,7 @@ def SetRatingtoSong(id,rating_id):
 
 
 @songs.route('', methods=['GET'])
-##@login_required
+@login_required
 def getAllSongs():
     """
     ---
@@ -553,7 +553,7 @@ def getAllSongs():
 
 
 @songs.route('/<id>', methods=['PUT'])
-##@login_required
+@login_required
 def update_song(id):
     """
     ---
@@ -649,7 +649,7 @@ def update_song(id):
 
 
 @songs.route('/<id>', methods=['DELETE'])
-##@login_required
+@login_required
 def delete_song(id):
     """
     ---
@@ -722,55 +722,41 @@ def delete_song(id):
 
 
 @songs.route('', methods=['POST'])
-##@login_required
+@login_required
 def create_song():
     """
     ---
     post:
-      description: Créer une nouvelle chanson
-      parameters:
-        - in: path
-          name: id
-          schema:
-            type: uuidv4
-          required: true
-          description: UUID of Song id
+      description: Creating a new song
       requestBody:
         required: true
         content:
             application/json:
-                schema: CreateSong  
+              schema: CreateSongSchema
             application/yaml:
-                schema: CreateSong
+              schema: CreateSongSchema
       responses:
         '201':
-          description: Créé
+          description: Created
           content:
             application/json:
-              schema: Song
+              schema: SongSchema
             application/yaml:
-              schema: Song
+              schema: SongSchema
         '401':
-          description: Non autorisé
+          description: Unauthorized
           content:
             application/json:
-              schema: Unauthorized
+              schema: UnauthorizedSchema
             application/yaml:
-              schema: Unauthorized
-        '404':
-          description: Not found
-          content:
-            application/json:
-              schema: NotFoundSchema
-            application/yaml:
-              schema: NotFoundSchema
+              schema: UnauthorizedSchema
         '422':
-          description: Entité non traitable
+          description: Unprocessable entity
           content:
             application/json:
-              schema: UnprocessableEntity
+              schema: UnprocessableEntitySchema
             application/yaml:
-              schema: UnprocessableEntity
+              schema: UnprocessableEntitySchema
         '500':
           description: Something went wrong
           content:
@@ -779,19 +765,30 @@ def create_song():
             application/yaml:
               schema: SomethingWentWrongSchema
       tags:
-          - songs
+          - Song
     """
+    accept_header = request.headers.get('Accept')
+
+    # parser le body
     try:
-        song_data = CreateSongSchema().loads(json_data=request.data.decode('utf-8'))
+      song_data = UpdateSongSchema().loads(json_data=request.data.decode('utf-8'))
     except ValidationError as e:
-        error = UnprocessableEntitySchema().loads(json.dumps({"message": e.messages.__str__()}))
-        return error, error.get("code")
+      error = UnprocessableEntitySchema().loads(json.dumps({"message": e.messages.__str__()}))
+      return isYaml(accept_header,error), error.get("code")
+
 
     try:
-        return songs_service.create_song(song_data)
-    except UnprocessableEntity:
-        error = UnprocessableEntitySchema().loads(json.dumps({"message": "Un ou plusieurs champs requis sont vides"}))
-        return error, error.get("code")
-    except Exception:
-        error = SomethingWentWrongSchema().loads("{}")
-        return error, error.get("code")
+      reponse, status = songs_service.create_song(song_data)
+      return isYaml(accept_header,reponse), status
+    except (NotFound):
+      error = NotFoundSchema().loads("{}")
+      return isYaml(accept_header,error), error.get("code")
+    except (Forbidden):
+      error = ForbiddenSchema().loads("{}")
+      return isYaml(accept_header,error), error.get("code")
+    except (SomethingWentWrong):
+      error = SomethingWentWrongSchema().loads("{}")
+      return isYaml(accept_header,error), error.get("code")
+    except (UnprocessableEntity):
+      error = UnprocessableEntitySchema().loads("{}")
+      return isYaml(accept_header,error), error.get("code")
