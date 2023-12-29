@@ -22,3 +22,14 @@ class Song(db.Model):
                (not self.title or self.title == "") and \
                (not self.album or self.album == "") and \
                (not self.content or self.content == "")
+    
+
+    @classmethod
+    def from_dict(cls, song_dict):
+        return cls(
+            song_dict.get('id'),
+            song_dict.get('artist'),
+            song_dict.get('title'),
+            song_dict.get('album'),
+            song_dict.get('content')
+        )
