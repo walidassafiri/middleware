@@ -66,14 +66,8 @@ def getAllUsers():
     """
     ---
     get:
-      description: Getting a user
-      parameters:
-        - in: path
-          name: id
-          schema:
-            type: uuidv4
-          required: true
-          description: UUID of user id
+      description: Getting all users
+      
       responses:
         '200':
           description: Ok
@@ -89,13 +83,7 @@ def getAllUsers():
               schema: Unauthorized
             application/yaml:
               schema: Unauthorized
-        '404':
-          description: Not found
-          content:
-            application/json:
-              schema: NotFound
-            application/yaml:
-              schema: NotFound
+        
       tags:
           - users
     """
@@ -182,7 +170,7 @@ def delete_user(id):
     """
     ---
     get:
-      description: Getting a user
+      description: Delete a user
       parameters:
         - in: path
           name: id
