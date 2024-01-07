@@ -8,13 +8,13 @@ import (
 	"net/http"
 )
 
-// GetCollections
-// @Tags         collections
-// @Summary      Get collections.
-// @Description  Get collections.
-// @Success      200            {array}  models.Collection
+// GetRatings
+// @Tags         Ratings
+// @Summary      Get Ratings.
+// @Description  Get Ratings.
+// @Success      200            {array}  models.Rating
 // @Failure      500             "Something went wrong"
-// @Router       /collections [get]
+// @Router       /ratings [get]
 func GetRatings(w http.ResponseWriter, _ *http.Request) {
 	// calling service
 	collections, err := collections.GetAllRatings()
