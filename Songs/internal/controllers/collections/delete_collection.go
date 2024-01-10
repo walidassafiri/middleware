@@ -17,7 +17,7 @@ import (
 // @Success      204            "No Content"
 // @Failure      422            "Cannot parse id"
 // @Failure      500            "Something went wrong"
-// @Router       /collections/{id} [delete]
+// @Router       /songs/{id} [delete]
 func DeleteSong(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	collectionID, _ := ctx.Value("collectionId").(uuid.UUID)

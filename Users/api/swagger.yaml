@@ -4,9 +4,9 @@ definitions:
     properties:
       id:
         type: string
-      mail:
-        type: string
       name:
+        type: string
+      username:
         type: string
     type: object
 info:

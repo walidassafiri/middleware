@@ -18,36 +18,13 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/collections": {
-            "get": {
-                "description": "Get collections.",
-                "tags": [
-                    "collections"
-                ],
-                "summary": "Get collections.",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/models.Collection"
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Something went wrong"
-                    }
-                }
-            }
-        },
         "/collections/{id}": {
-            "get": {
-                "description": "Get a collection.",
+            "put": {
+                "description": "Update a Rating.",
                 "tags": [
-                    "collections"
+                    "UpdateRating"
                 ],
-                "summary": "Get a collection.",
+                "summary": "Update a Rating.",
                 "parameters": [
                     {
                         "type": "string",
@@ -61,11 +38,104 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.Collection"
+                            "$ref": "#/definitions/models.Rating"
                         }
                     },
-                    "422": {
-                        "description": "Cannot parse id"
+                    "500": {
+                        "description": "Something went wrong"
+                    }
+                }
+            }
+        },
+        "/ratings": {
+            "get": {
+                "description": "Get Ratings.",
+                "tags": [
+                    "Ratings"
+                ],
+                "summary": "Get Ratings.",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Rating"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Something went wrong"
+                    }
+                }
+            }
+        },
+        "/ratings/": {
+            "post": {
+                "description": "Post a Rating.",
+                "tags": [
+                    "PostRating"
+                ],
+                "summary": "Post a Rating.",
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.Rating"
+                        }
+                    },
+                    "500": {
+                        "description": "Something went wrong"
+                    }
+                }
+            }
+        },
+        "/ratings/{id}": {
+            "get": {
+                "description": "Get a Rating.",
+                "tags": [
+                    "GetRating"
+                ],
+                "summary": "Get a Rating.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Rating UUID formatted ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Rating"
+                        }
+                    },
+                    "500": {
+                        "description": "Something went wrong"
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete raiting by id.",
+                "tags": [
+                    "DeleteRating"
+                ],
+                "summary": "Delete raiting.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Rating UUID formatted ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": ""
                     },
                     "500": {
                         "description": "Something went wrong"
@@ -75,13 +145,22 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "models.Collection": {
+        "models.Rating": {
             "type": "object",
             "properties": {
                 "content": {
                     "type": "string"
                 },
                 "id": {
+                    "type": "string"
+                },
+                "idSong": {
+                    "type": "string"
+                },
+                "idUser": {
+                    "type": "string"
+                },
+                "score": {
                     "type": "string"
                 }
             }

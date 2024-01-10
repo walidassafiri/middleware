@@ -322,7 +322,7 @@ def DeleteRatingtoSong(id,rating_id):
 def GetRatingtoSong(id,rating_id):
     """
     ---
-    post:
+    get:
       description: get rating
       parameters:
       - in: path
@@ -389,7 +389,7 @@ def GetRatingtoSong(id,rating_id):
 def SetRatingtoSong(id,rating_id):
     """
     ---
-    post:
+    put:
       description: Register
       parameters:
         - in: path
@@ -772,6 +772,7 @@ def create_song():
     # parser le body
     try:
       song_data = UpdateSongSchema().loads(json_data=request.data.decode('utf-8'))
+
     except ValidationError as e:
       error = UnprocessableEntitySchema().loads(json.dumps({"message": e.messages.__str__()}))
       return isYaml(accept_header,error), error.get("code")

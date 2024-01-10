@@ -1,10 +1,16 @@
 basePath: /
 definitions:
-  models.Collection:
+  models.Rating:
     properties:
       content:
         type: string
       id:
+        type: string
+      idSong:
+        type: string
+      idUser:
+        type: string
+      score:
         type: string
     type: object
 info:
@@ -15,24 +21,9 @@ info:
   title: middleware/example
   version: 1.0.0
 paths:
-  /collections:
-    get:
-      description: Get collections.
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/models.Collection'
-            type: array
-        "500":
-          description: Something went wrong
-      summary: Get collections.
-      tags:
-      - collections
   /collections/{id}:
-    get:
-      description: Get a collection.
+    put:
+      description: Update a Rating.
       parameters:
       - description: Collection UUID formatted ID
         in: path
@@ -43,14 +34,75 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.Collection'
-        "422":
-          description: Cannot parse id
+            $ref: '#/definitions/models.Rating'
         "500":
           description: Something went wrong
-      summary: Get a collection.
+      summary: Update a Rating.
       tags:
-      - collections
+      - UpdateRating
+  /ratings:
+    get:
+      description: Get Ratings.
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Rating'
+            type: array
+        "500":
+          description: Something went wrong
+      summary: Get Ratings.
+      tags:
+      - Ratings
+  /ratings/:
+    post:
+      description: Post a Rating.
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Rating'
+        "500":
+          description: Something went wrong
+      summary: Post a Rating.
+      tags:
+      - PostRating
+  /ratings/{id}:
+    delete:
+      description: Delete raiting by id.
+      parameters:
+      - description: Rating UUID formatted ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "204":
+          description: ""
+        "500":
+          description: Something went wrong
+      summary: Delete raiting.
+      tags:
+      - DeleteRating
+    get:
+      description: Get a Rating.
+      parameters:
+      - description: Rating UUID formatted ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Rating'
+        "500":
+          description: Something went wrong
+      summary: Get a Rating.
+      tags:
+      - GetRating
 schemes:
 - http
 swagger: "2.0"

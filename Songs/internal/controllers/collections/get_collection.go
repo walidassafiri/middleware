@@ -9,15 +9,13 @@ import (
 	"net/http"
 )
 
-// GetCollection
+// GetSongs
 // @Tags         collections
-// @Summary      Get a collection.
-// @Description  Get a collection.
-// @Param        id           	path      string  true  "Collection UUID formatted ID"
-// @Success      200            {object}  models.Collection
-// @Failure      422            "Cannot parse id"
+// @Summary      Get songs from collections.
+// @Description  Get a list of songs from collections.
+// @Success      200            {array}  models.Song
 // @Failure      500            "Something went wrong"
-// @Router       /collections/{id} [get]
+// @Router       /songs [get] 
 func GetSong(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	collectionId, _ := ctx.Value("collectionId").(uuid.UUID)

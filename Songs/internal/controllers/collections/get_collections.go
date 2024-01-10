@@ -8,13 +8,15 @@ import (
 	"net/http"
 )
 
-// GetCollections
+// GetSong
 // @Tags         collections
-// @Summary      Get collections.
-// @Description  Get collections.
-// @Success      200            {array}  models.Collection
-// @Failure      500             "Something went wrong"
-// @Router       /collections [get]
+// @Summary      Get a song from the collection.
+// @Description  Get a song from the collection by its UUID.
+// @Param        id               path      string  true  "Song UUID formatted ID"
+// @Success      200            {object}  models.Song
+// @Failure      422            "Cannot parse id"
+// @Failure      500            "Something went wrong"
+// @Router       /songs/{id} [get]
 func GetSongs(w http.ResponseWriter, _ *http.Request) {
 	// calling service
 	collections, err := collections.GetAllSongs()

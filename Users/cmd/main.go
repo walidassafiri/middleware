@@ -24,7 +24,7 @@ func main() {
 		})
 	})
 
-	logrus.Info("[INFO] Web server started. Now listening on *:8080")
+	logrus.Info("[INFO] Web server started. Now listening on *:8050")
 	logrus.Fatalln(http.ListenAndServe(":8050", r))
 }
 

@@ -18,22 +18,43 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/collections": {
-            "get": {
-                "description": "Get collections.",
+        "/collections/{id}": {
+            "put": {
+                "description": "Update a song in the collection.",
                 "tags": [
                     "collections"
                 ],
-                "summary": "Get collections.",
+                "summary": "Update a song in the collection.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Song UUID formatted ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Song object to update",
+                        "name": "song",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/models.Collection"
-                            }
+                            "$ref": "#/definitions/models.Song"
                         }
+                    },
+                    "400": {
+                        "description": "Invalid request payload"
+                    },
+                    "422": {
+                        "description": "Cannot parse id"
                     },
                     "500": {
                         "description": "Something went wrong"
@@ -41,17 +62,72 @@ const docTemplate = `{
                 }
             }
         },
-        "/collections/{id}": {
+        "/songs": {
             "get": {
-                "description": "Get a collection.",
+                "description": "Get a list of songs from collections.",
                 "tags": [
                     "collections"
                 ],
-                "summary": "Get a collection.",
+                "summary": "Get songs from collections.",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Song"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Something went wrong"
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new song.",
+                "tags": [
+                    "collections"
+                ],
+                "summary": "Create a new song.",
+                "parameters": [
+                    {
+                        "description": "Song object to be created",
+                        "name": "song",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Song"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.Song"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body"
+                    },
+                    "500": {
+                        "description": "Something went wrong"
+                    }
+                }
+            }
+        },
+        "/songs/{id}": {
+            "get": {
+                "description": "Get a song from the collection by its UUID.",
+                "tags": [
+                    "collections"
+                ],
+                "summary": "Get a song from the collection.",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Collection UUID formatted ID",
+                        "description": "Song UUID formatted ID",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -61,8 +137,35 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.Collection"
+                            "$ref": "#/definitions/models.Song"
                         }
+                    },
+                    "422": {
+                        "description": "Cannot parse id"
+                    },
+                    "500": {
+                        "description": "Something went wrong"
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a song from a collection.",
+                "tags": [
+                    "collections"
+                ],
+                "summary": "Delete a song from a collection.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Song UUID formatted ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
                     },
                     "422": {
                         "description": "Cannot parse id"
@@ -75,13 +178,22 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "models.Collection": {
+        "models.Song": {
             "type": "object",
             "properties": {
+                "album": {
+                    "type": "string"
+                },
+                "artist": {
+                    "type": "string"
+                },
                 "content": {
                     "type": "string"
                 },
                 "id": {
+                    "type": "string"
+                },
+                "title": {
                     "type": "string"
                 }
             }

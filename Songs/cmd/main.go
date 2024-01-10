@@ -24,7 +24,7 @@ func main() {
 		r.Post("/", collections.CreateSong)
 	})
 
-	logrus.Info("[INFO] Web server started. Now listening on *:8080")
+	logrus.Info("[INFO] Web server started. Now listening on *:8092")
 	logrus.Fatalln(http.ListenAndServe(":8092", r))
 }
 

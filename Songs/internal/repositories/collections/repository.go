@@ -3,7 +3,6 @@ package collections
 import (
 	"middleware/example/internal/helpers"
 	"middleware/example/internal/models"
-
 	"github.com/gofrs/uuid"
 )
 
@@ -50,25 +49,28 @@ func GetSongById(id uuid.UUID) (*models.Song, error) {
 	return &song, err
 }
 
-func CreateSong(song models.Song) (error) {
+func CreateSong(song models.Song) (*models.Song, error) {
     db, err := helpers.OpenDB()
     if err != nil {
-        return err
+        return nil,err
     }
 
 	newUUID, err := uuid.NewV4()
 	if err != nil {
-		return err
+		return nil,err
 	}
-
+	var newidSong=newUUID
     _, err = db.Exec("INSERT INTO song (id, artist, title, album, content) VALUES (?, ?, ?, ?, ?)",
-	newUUID.String(), song.Artist, song.Title, song.Album, song.Content)
+	newidSong.String(), song.Artist, song.Title, song.Album, song.Content)
     helpers.CloseDB(db)
     if err != nil {
-        return err
+        return nil,err
     }
 
-    return nil
+	collection, err := GetSongById(newidSong)
+
+
+	return collection,err
 }
 
 func UpdateSong(id uuid.UUID, song models.Song) (models.Song, error) {

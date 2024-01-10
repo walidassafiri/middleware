@@ -18,7 +18,7 @@ import (
 // @Success      201            {object}  models.Song
 // @Failure      400            "Invalid request body"
 // @Failure      500            "Something went wrong"
-// @Router       /collections [post]
+// @Router       /songs [post]
 func CreateSong(w http.ResponseWriter, r *http.Request) {
 	// Parse the request body to get the song details
 	reqBody, _ := ioutil.ReadAll(r.Body)
@@ -30,7 +30,7 @@ func CreateSong(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = collections.CreateSong(newSong)
+	collection,err := collections.CreateSong(newSong)
 
 	if err != nil {
 		logrus.Errorf("error : %s", err.Error())
@@ -46,7 +46,8 @@ func CreateSong(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusCreated)
-
+	body, _ := json.Marshal(collection)
+	_, _ = w.Write(body)
 	return
 
 }

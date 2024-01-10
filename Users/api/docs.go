@@ -126,10 +126,10 @@ const docTemplate = `{
                 "id": {
                     "type": "string"
                 },
-                "mail": {
+                "name": {
                     "type": "string"
                 },
-                "name": {
+                "username": {
                     "type": "string"
                 }
             }
