@@ -151,7 +151,7 @@ def create_song(song_data):
     if response.status_code == 500:
         raise SomethingWentWrong
 
-    return "", response.status_code
+    return response.json(), response.status_code
 
 
 def deleteRatingtoSong(idSong,idRating):
